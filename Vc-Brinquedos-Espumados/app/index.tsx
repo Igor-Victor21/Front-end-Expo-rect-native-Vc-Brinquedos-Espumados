@@ -3,7 +3,9 @@ import { StyleSheet, Text } from 'react-native';
 export default function HomeScreen() {
   return (
     <>
-      <Text>Index principal das tabs do segundo layout</Text>    
+      <Text>EU SOUUUUU UMMMMM CORDEIRINHOOOOOO JESUS É MEU PASTOR</Text>    
+      <Text>Amém</Text>
+      <Text>Amém Jesus, Deus é bom e o diabo não presta</Text>
     </>
   );
 }
