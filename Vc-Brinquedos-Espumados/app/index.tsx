@@ -1,32 +1,40 @@
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, View, Image, ImageSourcePropType } from 'react-native';
 
 export default function HomeScreen() {
   return (
     //primeira página a ser aberta showroom provavelmente fica aki
-
+    
     <>
-      <Text>EU SOUUUUU UMMMMM CORDEIRINHOOOOOO JESUS É MEU PASTOR</Text>    
-      <Text>Amém</Text>
-      <Text>Amém Jesus, Deus é bom e o diabo não presta</Text>
+      <View style={styles.nav}>
+        <View style={styles.options}>
+          <Image style={styles.icons} source={require ('../assets/image/home-teste-sem-figma.png')}/>
+        
+        </View>
+        <View style={styles.options}>
+         <Image style={styles.icons} source={require ('../assets/image/cart-test-sem-figma.png')}/>
+
+        </View>
+        <View style={styles.options}>
+          <Image style={styles.icons} source={require ('../assets/image/favorite-test-sem-figma.png')}/>
+
+        </View>
+        <View style={styles.options}>
+          <Image style={styles.icons} source={require ('../assets/image/user-test-sem-figma.png')}/>
+
+        </View>
+      </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  nav: {
+
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  options: {
+    
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+  icons: {
+
+  }
 });
