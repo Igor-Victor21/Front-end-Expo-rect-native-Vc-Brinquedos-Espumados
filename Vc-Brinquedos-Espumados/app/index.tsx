@@ -2,6 +2,8 @@ import { StyleSheet, Text } from 'react-native';
 
 export default function HomeScreen() {
   return (
+    //primeira página a ser aberta showroom provavelmente fica aki
+
     <>
       <Text>EU SOUUUUU UMMMMM CORDEIRINHOOOOOO JESUS É MEU PASTOR</Text>    
       <Text>Amém</Text>

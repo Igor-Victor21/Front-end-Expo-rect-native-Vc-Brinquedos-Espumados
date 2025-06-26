@@ -5,7 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 export default function NotFoundScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
+      <Stack.Screen options={{ title: 'Página não encontrada' }} />
       <View style={styles.container}>
         <Text>This screen does not exist.</Text>
         <Link href="/" style={styles.link}>

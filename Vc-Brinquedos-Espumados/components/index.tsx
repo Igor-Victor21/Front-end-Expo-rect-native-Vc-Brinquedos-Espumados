@@ -10,6 +10,7 @@ export default function Req() {
     const [page, setPage] = useState("")
     const [error, setError] = useState(false)
 
+    // segunda index a ser acessada
     return(
         <>
         <View style={styles.wrapPage}>
