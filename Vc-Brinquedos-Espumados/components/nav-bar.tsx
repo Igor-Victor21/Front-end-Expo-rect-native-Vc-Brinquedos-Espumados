@@ -1,20 +1,24 @@
+import { router } from 'expo-router';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-export default function HomeScreen() {
+export default function Nav() {
 
   const handleHome = () => {
-
+        router.push("/")
   }
 
   const handleCart = () => {
+        router.push("/cart")
 
   }
 
   const handleFavorite = () => {
+        router.push("/favorite")
 
   }
 
   const handleUser = () => {
+        router.push("/user")
 
   }
   return (

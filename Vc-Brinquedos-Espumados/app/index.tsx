@@ -1,12 +1,13 @@
-import { StyleSheet, Text, } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet } from 'react-native';
+import Nav from '../components/nav-bar';
 
 export default function HomeScreen() {
 
   return (
-      <SafeAreaView>
-        <Text>Index Principal</Text>
-      </SafeAreaView>
+      <>
+      <Nav/>
+      </>
+
   );
 }
 
