@@ -1,11 +1,30 @@
 import { StyleSheet, Text, TextInput, View, TouchableOpacity, Image } from 'react-native';
 import Nav from '../components/nav-bar';
 import InfoModal from "./modal";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function HomeScreen() {
 
-  const [isModalVisible, setModalVisible] = useState(true);
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const checkModalStatus = async () => {
+      try {
+        const hasSeenModal = await AsyncStorage.getItem('hasSeenModal');
+        if (!hasSeenModal) {
+          setModalVisible(true);
+          await AsyncStorage.setItem('hasSeenModal', 'true');
+        }
+      } catch (error) {
+        console.error('Erro ao acessar AsyncStorage:', error);
+      }
+    };
+
+    checkModalStatus();
+  }, []);
+
   return (
       <>
       <InfoModal visible={isModalVisible} onClose={() => setModalVisible(false)} />
