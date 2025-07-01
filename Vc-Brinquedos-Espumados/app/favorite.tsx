@@ -17,6 +17,10 @@ type Produto = {
 // Por hora: O useEffect está pegando todos  os produtos do backend
 // Futuras edições: Alterar useEffect para que mostre apenas  os favoritados
 
+// Quando tiver mais produtos no backend, desenvolver scrollview da favorite page
+
+
+
 export default function CartScreen() {
 
   const [data, setData] = useState<Produto[]>([]);
@@ -39,13 +43,14 @@ export default function CartScreen() {
       <>
       <Nav/>
       <View style={styles.conteinerTop}>
-        <Text style={styles.favoriteTT}>Favorite</Text>
+        <Text style={styles.favoriteTT}>Favoritos</Text>
         <View style={styles.conteinerItems}>
-          <Text style={styles.itemsCount}>0</Text>
+          <Text style={styles.itemsCount}>{data.length}</Text>
           <Text style={styles.itemsTxt}>item(s)</Text>
           </View>        
       </View>
-      <View style={styles.conteinerCards}>
+      <View style={styles.productsList}>
+        <View style={styles.conteinerCards}>
         <SafeAreaView style={styles.wrapCards}>
                 <FlatList
                 data={data}
@@ -61,6 +66,7 @@ export default function CartScreen() {
                 />
          </SafeAreaView>
 
+      </View>
       </View>
       </>
 
@@ -91,9 +97,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 21
    },
+   productsList: {
+    borderWidth: 2,
+    width: '100%',
+    height: '70%',
+    zIndex: -1
+   },
    conteinerCards:{
     display: 'flex',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginTop: 20
    },
    wrapCards: {
     display: 'flex',
