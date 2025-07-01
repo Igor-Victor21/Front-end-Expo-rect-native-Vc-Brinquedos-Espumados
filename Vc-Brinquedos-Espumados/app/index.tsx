@@ -1,8 +1,8 @@
-import { StyleSheet, Text, TextInput, View, TouchableOpacity, Image } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Nav from '../components/nav-bar';
 import InfoModal from "./modal";
-import { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function HomeScreen() {
@@ -41,10 +41,12 @@ export default function HomeScreen() {
       <Text style={styles.Text}>Nova Coleção</Text>
 
       <View style={styles.Bar}>
-        <TouchableOpacity style={styles.Baritem}>Todos</TouchableOpacity>
-        <TouchableOpacity style={styles.Baritem}>Brinquedos</TouchableOpacity>
-        <TouchableOpacity style={styles.Baritem}>Kits</TouchableOpacity>
-        <TouchableOpacity style={styles.Baritem}>Promoções</TouchableOpacity>
+        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+          <TouchableOpacity style={styles.Baritem}>Todos</TouchableOpacity>
+          <TouchableOpacity style={styles.Baritem}>Brinquedos</TouchableOpacity>
+          <TouchableOpacity style={styles.Baritem}>Kits</TouchableOpacity>
+          <TouchableOpacity style={styles.Baritem}>Promoções</TouchableOpacity>
+        </ScrollView>
       </View>
 
       <View>
@@ -67,8 +69,7 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   UserImage: {
-    position: 'absolute',
-    right: 25,
+    right: '-90%',
   },
   MessageIntro: {
     fontWeight: 'bold',
@@ -94,13 +95,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins'
   },
   Bar: {
-    marginHorizontal: 10
+    marginHorizontal: 10,
+    paddingTop: 10,
+    paddingBottom: 40,
+    flexDirection: 'row'
   },
   Baritem: {
     backgroundColor: 'black',
     color: 'white',
     borderRadius: 999,
-    margin: 10,
+    margin: 15,
     textAlign: 'center',
     width: '25%',
     padding: 5
