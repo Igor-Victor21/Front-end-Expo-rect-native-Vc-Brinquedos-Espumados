@@ -21,6 +21,7 @@ export default function RootLayout() {
         <Stack.Screen name='cart' options={{headerShown: false}}/>
         <Stack.Screen name='favorite' options={{headerShown: false}}/>
         <Stack.Screen name='user' options={{headerShown: false}}/>
+        <Stack.Screen name='login' options={{headerShown: false}}/>
         <Stack.Screen name="modal" options={{presentation: 'modal',}}/>
         <Stack.Screen name="+not-found" />
       </Stack>

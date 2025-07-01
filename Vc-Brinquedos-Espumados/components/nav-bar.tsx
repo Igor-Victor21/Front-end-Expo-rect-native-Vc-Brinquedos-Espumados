@@ -17,8 +17,8 @@ export default function Nav() {
 
   }
 
-  const handleUser = () => {
-        router.push("/user")
+  const handleLogin = () => {
+        router.push("/login")
 
   }
   return (
@@ -45,7 +45,7 @@ export default function Nav() {
 
         </View>
         <View style={styles.options}>
-          <TouchableOpacity onPress={handleUser}>
+          <TouchableOpacity onPress={handleLogin}>
             <Image style={styles.icons} source={require('../assets/image/user-test-sem-figma.png')} />
           </TouchableOpacity>
 
