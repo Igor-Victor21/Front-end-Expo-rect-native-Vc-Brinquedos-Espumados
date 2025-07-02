@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
     borderRadius: 10
   },
   UserImage: {
+    width: '10%',
     right: '-90%',
   },
   MessageIntro: {

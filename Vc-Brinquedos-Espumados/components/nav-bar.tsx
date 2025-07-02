@@ -57,7 +57,7 @@ export default function Nav() {
 
 const styles = StyleSheet.create({
   nav: {
-    position: 'absolute',
+    position: 'fixed',
     bottom: 0,
     left: 0,
     right: 0,

@@ -101,15 +101,15 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     width: '100%',
     height: '70%',
-    zIndex: -1
+    zIndex: -1,
    },
    conteinerCards:{
     display: 'flex',
     alignSelf: 'center',
-    marginTop: 20
+    marginTop: 20,
    },
    wrapCards: {
     display: 'flex',
-    alignContent: 'center'
+    alignContent: 'center',
    }
 });

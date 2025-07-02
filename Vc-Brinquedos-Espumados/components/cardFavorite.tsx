@@ -3,6 +3,7 @@ import { StyleSheet, Text, Image, View, TouchableOpacity } from 'react-native';
 
 
 
+
 export const CardFav = ({ name, image, description, price } : {name: string, image: string, description: string, price : number})=> {
     return (
         <View style={styles.container}>
@@ -35,10 +36,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     borderWidth: 2,
-    borderRadius: 20,
+    borderRadius: 30,
     width: 350,
     height: 160,
-    backgroundColor: ''
+    backgroundColor: 'linear-gradient(181deg,rgba(255, 194, 247, 1) 15%, rgba(198, 189, 255, 1) 100%)',
+    marginBottom: 20
     },
     containerTxt: {
     display: 'flex',
@@ -70,15 +72,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     },
     containerImg:{
-    borderWidth: 2,
-    borderRadius: 5,
+    borderWidth: 0,
+    borderRadius: 25,
     width: 130,
     height: 'auto',
     marginLeft: 15,
-    marginVertical: "3%"
+    marginVertical: "3%",
+    backgroundColor: 'transparent'
     },
     imgstyle: {
-
+    width: 130, 
+    height: 130, 
+    borderRadius: 10 
     },
     title: {
 
