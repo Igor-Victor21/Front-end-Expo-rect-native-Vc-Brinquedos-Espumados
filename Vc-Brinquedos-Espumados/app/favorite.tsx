@@ -98,9 +98,17 @@ const styles = StyleSheet.create({
     fontSize: 21
    },
    productsList: {
-    borderWidth: 2,
+    borderWidth: 0,
     width: '100%',
     height: '70%',
+    borderRadius: 10,
+    // IOS
+    shadowColor: 'rgba(14, 30, 37, 1)',
+    shadowOffset: { width: 5, height: 2 },
+    shadowOpacity: 0.32, 
+    shadowRadius: 12,     
+    // Android
+    elevation: 6,
     zIndex: -1,
    },
    conteinerCards:{

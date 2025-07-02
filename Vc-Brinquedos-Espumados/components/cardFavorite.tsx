@@ -1,4 +1,5 @@
-import { StyleSheet, Text, Image, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, Image, View, TouchableOpacity, Platform } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 
@@ -6,41 +7,59 @@ import { StyleSheet, Text, Image, View, TouchableOpacity } from 'react-native';
 
 export const CardFav = ({ name, image, description, price } : {name: string, image: string, description: string, price : number})=> {
     return (
-        <View style={styles.container}>
-            <View style={styles.containerImg}>
-                <Image 
-                style={styles.imgstyle}
-                source={{uri: image}}
-                accessibilityLabel="a"
-                />
-            </View>
-            <View style={styles.containerTxt}>
-                <Text style={styles.titleName}>{name}</Text>
-                <Text style={styles.titleDesc}>{description}</Text>
-                <View>
-                    <Text style={styles.titlePrice}>Preço</Text>
-                    <Text style={styles.showPrice}>R$ {price.toFixed(2)}</Text>
-                </View>
-                <TouchableOpacity style={styles.conteinerIcon}>
-                    <Image style={styles.favIcon} source={require('../assets/image/heart.png')} />
-                </TouchableOpacity>                
-            </View>
+        <LinearGradient
+      colors={['rgba(231, 167, 199, 1)', 'rgba(167, 167, 231, 1)']}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 1 }}
+      style={styles.container} // Gradiente aplicado no container inteiro
+    >
+      <View style={styles.containerImg}>
+        <Image 
+          style={styles.imgstyle}
+          source={{ uri: image }}
+          accessibilityLabel="a"
+        />
+      </View>
+
+      <View style={styles.containerTxt}>
+        <Text style={styles.titleName}>{name}</Text>
+        <Text style={styles.titleDesc}>{description}</Text>
+
+        <View>
+          <Text style={styles.titlePrice}>Preço</Text>
+          <Text style={styles.showPrice}>R$ {price.toFixed(2)}</Text>
         </View>
+
+        <TouchableOpacity style={styles.conteinerIcon}>
+          <Image style={styles.favIcon} source={require('../assets/image/heart.png')} />
+        </TouchableOpacity>
+      </View>
+    </LinearGradient>
             
         )
 }
 
 const styles = StyleSheet.create({
     container:{
-    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    borderWidth: 2,
+    borderWidth: 0,
     borderRadius: 30,
     width: 350,
-    height: 160,
-    backgroundColor: 'linear-gradient(181deg,rgba(255, 194, 247, 1) 15%, rgba(198, 189, 255, 1) 100%)',
-    marginBottom: 20
+    height: 150,
+    marginBottom: 20,
+    overflow: 'hidden',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.4,
+        shadowRadius: 23.8,
+      },
+      android: {
+        elevation: 12, // Simulação da sombra com blur no Android
+      },
+    }),
     },
     containerTxt: {
     display: 'flex',
@@ -49,8 +68,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 'auto',
     marginLeft: 20,
-    marginTop: '5%',
-    gap: 5
+    marginTop: '3%',
     },
     titleName:{
     textAlign: 'left',
@@ -68,8 +86,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     },
     showPrice:{
-    fontWeight: '500',
-    fontSize: 18,
+    fontWeight: '700',
+    fontSize: 21,
+    width: 200
     },
     containerImg:{
     borderWidth: 0,
@@ -78,12 +97,13 @@ const styles = StyleSheet.create({
     height: 'auto',
     marginLeft: 15,
     marginVertical: "3%",
-    backgroundColor: 'transparent'
+
     },
     imgstyle: {
     width: 130, 
     height: 130, 
-    borderRadius: 10 
+    borderRadius: 10,
+    backgroundColor: '#D9D9D94D' 
     },
     title: {
 
