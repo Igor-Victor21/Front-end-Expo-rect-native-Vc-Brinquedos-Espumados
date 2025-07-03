@@ -92,7 +92,9 @@ export default function Login() {
                         <Text style={styles.errorMessageText}>{message}</Text>
                     </View>
                 )}
-                <Nav />
+                <Nav image={0} onPress={function (): void {
+                    throw new Error("Function not implemented.");
+                } } />
             </View>
         </>
     );
