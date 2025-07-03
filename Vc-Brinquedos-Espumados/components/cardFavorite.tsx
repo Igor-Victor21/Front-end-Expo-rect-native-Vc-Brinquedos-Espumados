@@ -1,4 +1,4 @@
-import { StyleSheet, Text, Image, View, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, Text, Image, View, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 
@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export const CardFav = ({ name, image, description, price } : {name: string, image: string, description: string, price : number})=> {
     return (
+      
         <LinearGradient
       colors={['rgba(231, 167, 199, 1)', 'rgba(167, 167, 231, 1)']}
       start={{ x: 0.5, y: 0 }}
@@ -35,6 +36,7 @@ export const CardFav = ({ name, image, description, price } : {name: string, ima
         </TouchableOpacity>
       </View>
     </LinearGradient>
+           
             
         )
 }
@@ -49,17 +51,17 @@ const styles = StyleSheet.create({
     height: 150,
     marginBottom: 20,
     overflow: 'hidden',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.4,
-        shadowRadius: 23.8,
-      },
-      android: {
-        elevation: 12, // Simulação da sombra com blur no Android
-      },
-    }),
+    // iOS shadow
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    // Android
+    elevation: 15
+    
     },
     containerTxt: {
     display: 'flex',
@@ -79,6 +81,7 @@ const styles = StyleSheet.create({
     titleDesc:{
     fontWeight: '300',
     fontSize: 18,
+    width: 150
     
     },
     titlePrice:{

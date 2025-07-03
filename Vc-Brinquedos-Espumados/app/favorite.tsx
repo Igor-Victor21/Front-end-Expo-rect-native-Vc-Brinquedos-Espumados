@@ -1,9 +1,11 @@
-import { StyleSheet, Image, TouchableOpacity, Text, SafeAreaView, FlatList } from 'react-native';
+import { StyleSheet, Image, TouchableOpacity, Text, SafeAreaView, FlatList, ScrollView } from 'react-native';
 import Nav from '../components/nav-bar';
 import { View } from 'react-native';
 import { CardFav } from '@/components/cardFavorite';
 import { useEffect, useState } from 'react';
+import { router } from 'expo-router';
 import { apiVcEspumados } from '@/api/apiVcEspumados';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 type Produto = {
@@ -17,7 +19,7 @@ type Produto = {
 // Por hora: O useEffect está pegando todos  os produtos do backend
 // Futuras edições: Alterar useEffect para que mostre apenas  os favoritados
 
-// Quando tiver mais produtos no backend, desenvolver scrollview da favorite page
+// ************ Quando tiver mais produtos no backend, desenvolver scrollview da favorite page ************
 
 
 
@@ -39,6 +41,14 @@ export default function CartScreen() {
   fetchData();
 }, []);
 
+const handleProduct = (item: Produto) => {
+  console.log(item.id)
+  router.push({
+    pathname: '/product/[id]',
+    params: { id: item.id.toString() },
+  });
+};
+
   return (
       <>
       <Nav/>
@@ -49,25 +59,28 @@ export default function CartScreen() {
           <Text style={styles.itemsTxt}>item(s)</Text>
           </View>        
       </View>
-      <View style={styles.productsList}>
+      <ScrollView style={styles.productsList}>
         <View style={styles.conteinerCards}>
         <SafeAreaView style={styles.wrapCards}>
+          
                 <FlatList
                 data={data}
                 renderItem={({ item }) => (
-                  <CardFav
+                  <TouchableOpacity onPress={() => handleProduct(item)}>
+                    <CardFav
                     name={item.name}
                     description={item.description}
                     image={item.image}
                     price={item.price}
                   />
+                  </TouchableOpacity>
                 )}
                 keyExtractor={(item) => item.id.toString()}
                 />
          </SafeAreaView>
 
       </View>
-      </View>
+      </ScrollView>
       </>
 
   );
@@ -88,7 +101,7 @@ const styles = StyleSheet.create({
    conteinerItems:{
     display: 'flex',
     flexDirection: 'row',
-    gap: 10
+    gap: 15
    },
    itemsTxt: {
     fontSize: 21
