@@ -1,54 +1,40 @@
 import { router } from 'expo-router';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, ImageSourcePropType, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-export default function Nav() {
+type NavItemsProps = {
+  image: ImageSourcePropType;
+  onPress: () => void;
+}
 
-  const handleHome = () => {
-        router.push("/")
-  }
+const icons = [{image: require('../assets/image/home-teste-sem-figma.png'),
+                onPress: () => router.push("/")
+              },
+               {image: require('../assets/image/cart-test-sem-figma.png'),
+                onPress: () => router.push("/cart")
+               },
+               {image: require('../assets/image/favorite-test-sem-figma.png'),
+                onPress: () => router.push("/favorite")
+               },
+               {image: require('../assets/image/user-test-sem-figma.png'),
+                onPress: () => router.push("/login")
+               }
+]
 
-  const handleCart = () => {
-        router.push("/cart")
+//Fazer o handlepress pra animação do navbar
+//Melhorar o css pra animação
 
-  }
+export default function Nav({}: NavItemsProps) {
 
-  const handleFavorite = () => {
-        router.push("/favorite")
-
-  }
-
-  const handleLogin = () => {
-        router.push("/login")
-
-  }
   return (
     //primeira página a ser aberta showroom provavelmente fica aki
     <>
-      <View style={styles.nav}>
-        <View style={styles.options}>
-          {/* O componente TouchableOpacity é responsavel por tornar uma imagem clicável com uma animação suave de click nela  */}
-          <TouchableOpacity onPress={handleHome}>
-            <Image style={styles.icons} source={require('../assets/image/home-teste-sem-figma.png')} />
-          </TouchableOpacity>
-
-        </View>
-        <View style={styles.options}>
-          <TouchableOpacity onPress={handleCart}>
-            <Image style={styles.icons} source={require('../assets/image/cart-test-sem-figma.png')} />
-          </TouchableOpacity>
-
-        </View>
-        <View style={styles.options}>
-          <TouchableOpacity onPress={handleFavorite}>
-            <Image style={styles.icons} source={require('../assets/image/favorite-test-sem-figma.png')} />
-          </TouchableOpacity>
-
-        </View>
-        <View style={styles.options}>
-          <TouchableOpacity onPress={handleLogin}>
-            <Image style={styles.icons} source={require('../assets/image/user-test-sem-figma.png')} />
-          </TouchableOpacity>
-
+      <View style={styles.container}>
+        <View style={styles.nav}>
+          {icons.map((item, index) => (
+            <TouchableOpacity key={index} onPress={item.onPress} style={styles.options}>
+              <Image source={item.image} style={styles.icons} />
+            </TouchableOpacity>
+          ))}
         </View>
       </View>
     </>
@@ -56,29 +42,33 @@ export default function Nav() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    // flex: 1,
+    // backgroundColor: '#fff', // ou qualquer cor que ajude a ver a nav
+    // justifyContent: 'flex-start',
+  },
   nav: {
     position: 'fixed',
     bottom: 0,
     left: 0,
     right: 0,
-    paddingVertical: 10,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: 70,
+    paddingHorizontal: 10,
     flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     backgroundColor: '#A7C7E7',
-
+    zIndex: 999,
+    elevation: 10,
   },
   options: {
-    flex: 1,// ocupa todo espaço disponivel 
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
-    width: 100,
-    height: 50,
   },
   icons: {
     width: 30,
     height: 30,
-  }
+    resizeMode: 'contain',
+  },
 });
