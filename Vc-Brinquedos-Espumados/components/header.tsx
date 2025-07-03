@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#2A2A2A',       
     },
     img: {
+        position: 'absolute',
         flex: 1,
         width: '100%',
         height: 200, 
