@@ -20,6 +20,11 @@ export default function ProductDetail() {
   console.log('ID recebido:', id)
   const router = useRouter();
   const [product, setProduct] = useState<Produto>();
+  const [selected, setSelected] = useState(1);
+
+  const colorHandler = () => {
+    
+  };
 
   useEffect(() => {
     if (id) {
@@ -67,9 +72,30 @@ export default function ProductDetail() {
         <View style={styles.colorOptionsConteiner}>
           <Text style={styles.labelColors}>CORES</Text>
           <View style={styles.optionsRow}>
-            <TouchableOpacity style={styles.option1}></TouchableOpacity>
-            <TouchableOpacity style={styles.option2}></TouchableOpacity>
-            <TouchableOpacity style={styles.option3}></TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setSelected(1)}
+              style={[
+                styles.colorOption,
+                styles.option1,
+                selected === 1 && styles.selectedOption
+              ]}
+            />
+            <TouchableOpacity
+              onPress={() => setSelected(2)}
+              style={[
+                styles.colorOption,
+                styles.option2,
+                selected === 2 && styles.selectedOption
+              ]}
+            />
+            <TouchableOpacity
+              onPress={() => setSelected(3)}
+              style={[
+                styles.colorOption,
+                styles.option3,
+                selected === 3 && styles.selectedOption
+              ]}
+            />
           </View>
         </View>
       </View>
@@ -77,8 +103,10 @@ export default function ProductDetail() {
       <View style={styles.addCartBtn}>
         <TouchableOpacity style={styles.cartButton}>
           <Text style={styles.cartText}>Adicionar ao Carrinho </Text>
-          <Text style={styles.cartIcon}>🛒</Text>
-        </TouchableOpacity>
+          <View style={styles.cartIconConteiner}>
+            <Image style={styles.cartIcon} source={require('../../assets/image/carrinho.png')}/>         {/* <Text style={styles.cartIcon}>🛒</Text> */}
+        </View>
+          </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -164,16 +192,17 @@ const styles = StyleSheet.create({
     padding: 0,
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     borderWidth: 2,
     borderRadius: 45,
     width: 173,
     height: 77,
-    // paddingLeft: 30,
+    paddingLeft: 30,
     // paddingTop: 5  
   },
   labelPrice: {
-    fontSize: 16,
+    paddingTop: 2,
+    fontSize: 20,
     fontWeight: '500',
   },
   price: {
@@ -181,6 +210,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     
   },
+
+  //Botão das  cores ***********************************************************************
   colorOptionsConteiner:{
     display: 'flex',
     justifyContent:  'center',
@@ -189,9 +220,11 @@ const styles = StyleSheet.create({
     borderRadius: 45,
     width: 173,
     height: 77,
+    paddingBottom: 15
   },
   labelColors:{
     fontSize: 20,
+    marginBottom: 15,
     fontWeight: '500',
   },
   optionsRow: {
@@ -216,6 +249,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#B07C7B',
     borderRadius: 15,
   },
+
+colorOption: {
+  width: 20,
+  height: 20,
+  borderRadius: 15,
+  borderWidth: 2,
+  borderColor: 'transparent',
+},
+
+selectedOption: {
+  borderColor: '#333',
+  borderWidth: 2,
+  transform: [{ scale: 1.2 }],
+},
+
+
+  // Botão De Adicionar ao carrinho ***********************************************************************
   addCartBtn: {
     alignItems: 'center',
     marginTop: 70,
@@ -225,20 +275,44 @@ const styles = StyleSheet.create({
   cartButton: {
     display: 'flex',
     flexDirection: 'row',
-    backgroundColor: '#4CAF50',
-    padding: 15,
-    width: 340,
-    borderRadius: 10,
+    backgroundColor: '#2A2A2A',
+    padding: 0,
+    width: 350,
+    height: 50,
+    borderRadius: 40,
   },
   cartText: {
     color: 'white',
     fontSize: 16,
-    width: 280
+    width: 280,
+    marginTop:4,
+    padding: 9
+  },
+  cartIconConteiner:{
+    alignSelf: 'center',
+    justifyContent: 'center',
+    backgroundColor: "#62d15e",
+    borderRadius: 50,
+    width: 37,
+    height: 37,
+    marginTop:0,
+    marginLeft: 20,
+    padding: 5,
+    // iOS shadow
+    shadowColor: '#D9D9D9',
+    shadowOffset: {
+      width: 0,
+      height: -5,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    // Android
+    elevation: 15
   },
   cartIcon:{
     borderRadius: 52,
-    width: 35,
-    height: 35,
-    backgroundColor: '#62d15e'
+    width: 25,
+    height: 25,
   },
+  
 });
