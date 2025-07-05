@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import Nav from '../components/nav-bar';
+import { apiVcEspumados } from '@/api/apiVcEspumados'; // Supondo que sua API seja configurada assim
 import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Nav from '../components/nav-bar';
 
 export default function User() {
-  //as variaveis  user, setUser começa com null, para não entrar ja direto com uma conta de usuário 
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');  // Buscar o usuário do localStorage
+    const storedUser = localStorage.getItem('user'); // Buscar o usuário do localStorage
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     } else {
@@ -16,17 +16,35 @@ export default function User() {
     }
   }, []);
 
-  // Função para lidar com o logout
   const handleLogout = () => {
-    localStorage.removeItem('user');  // Limpa o usuário do localStorage
-    setUser(null);  // Limpa o estado local do usuário
-    router.push('/login');  // Redireciona para a página de login
+    localStorage.removeItem('user');
+    setUser(null);
+    router.push('/login');
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user || !user.id) return;
+
+    try {
+      // Chamada para API DELETE para excluir o usuário do banco de dados
+      await apiVcEspumados.delete(`/users/${user.id}`);
+      
+      // Depois de deletar o usuário, remove do localStorage e faz o logout
+      localStorage.removeItem('user');
+      setUser(null);
+      router.push('/login');
+    } catch (err) {
+      console.error('Erro ao deletar conta:', err);
+    }
   };
 
   if (!user) {
     return (
       <View style={styles.wrapPage}>
         <Text style={styles.titleName}>Nenhum usuário encontrado</Text>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutText}>Voltar ao Login</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -59,9 +77,16 @@ export default function User() {
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutText}>Sair</Text>
         </TouchableOpacity>
+
+        {/* Botão de Deletar Conta */}
+        <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
+          <Text style={styles.deleteText}>Deletar Conta</Text>
+        </TouchableOpacity>
       </View>
 
-      <Nav />
+      <Nav image={0} onPress={function (): void {
+        throw new Error('Function not implemented.');
+      }} />
     </>
   );
 }
@@ -92,6 +117,18 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   logoutText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  deleteButton: {
+    backgroundColor: '#FF3B30',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 999,
+    marginTop: 20,
+  },
+  deleteText: {
     color: '#ffffff',
     fontSize: 16,
     fontWeight: 'bold',

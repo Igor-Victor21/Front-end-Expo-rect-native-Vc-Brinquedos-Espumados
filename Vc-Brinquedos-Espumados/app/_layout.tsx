@@ -24,6 +24,8 @@ export default function RootLayout() {
         <Stack.Screen name='login' options={{headerShown: false}}/>
         <Stack.Screen name="modal" options={{presentation: 'modal',}}/>
         <Stack.Screen name="product/[id]" options={{ headerShown: false }} />
+        <Stack.Screen name="userAdmin" options={{ headerShown: false }} />
+
 
         <Stack.Screen name="+not-found" />
       </Stack>

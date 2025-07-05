@@ -14,21 +14,38 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [selectedTab, setSelectedTab] = useState("login");
 
+    //Função para realizar login 
     const handleLogin = async () => {
+        //tentando buscar por todos os usuários com o mesmo email e senha
         try {
+            //variavel response espera a resposta da Api apiVcEspumados dos dados dos usuários
             const response = await apiVcEspumados.get('/users');
+            //variavel users recebe os dados dos usuários
             const users = response.data;
+            //variavel foundUser recebe os dados dos usuários
+            //e tenta encontrar dentro da api um email e uma senha igual, a que o usuário informou 
             const foundUser = users.find(
                 (u) => u.email === email && u.password === password
             );
-            if (!foundUser) {
-                setMessage("Email ou senha incorretos");
-                setTimeout(() => setMessage(""), 3000);  // Remove mensagem após 3 segundos
+            //condiconal para quando o usuário errar o email ou senha, aparece mensagem de erro
+            //deixa a mensagem de erro aparecer durante 3 segundos
+            if (!foundUser) {//(!foundUser) se o usuário não for encontrado
+                setMessage("Email ou senha incorretos");//exiba esta mensagem 
+                setTimeout(() => setMessage(""), 3000);  //remove mensagem após 3 segundos
                 return;
             }
+            //caso ele passe pela condicional de email ou senha incorretos 
+            //o usuário tem a permissão para acessar a rota user onde fica os dados do usuário
             await AsyncStorage.setItem('user', JSON.stringify(foundUser));
             setUser(foundUser);
-            router.push('/user');
+
+            if (foundUser.email === 'igor.victorcontato@gmail.com') {
+                router.push('/userAdmin');
+            } else {
+                router.push('/user');
+            }
+
+
         } catch (error) {
             setMessage('Erro ao tentar logar: ' + (error.message || 'Erro desconhecido'));
             setTimeout(() => setMessage(""), 3000);  // Remove mensagem após 3 segundos
@@ -39,12 +56,18 @@ export default function Login() {
         const loadUser = async () => {
             const storedUser = await AsyncStorage.getItem('user');
             if (storedUser) {
-                setUser(JSON.parse(storedUser));
-                router.push('/user');
+                const parsedUser = JSON.parse(storedUser);
+                setUser(parsedUser);
+
+                if (parsedUser.email === 'igor.victorcontato@gmail.com') {
+                    router.push('/userAdmin');
+                } else {
+                    router.push('/user');
+                }
             }
         };
         loadUser();
-    }, []);
+    }, [])
 
     return (
         <>
@@ -70,13 +93,7 @@ export default function Login() {
                     <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder="Nome de usuário ou E-mail" keyboardType="email-address" placeholderTextColor="#ccc" />
                     <View>
                         <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder="Senha" keyboardType="default" secureTextEntry={!showPassword} placeholderTextColor="#ccc" />
-                        <TouchableOpacity
-                            onPress={() => setShowPassword(prev => !prev)}
-                            style={{
-                                position: "absolute",
-                                right: 10,
-                                top: 15,
-                            }}
+                        <TouchableOpacity onPress={() => setShowPassword(prev => !prev)}style={{position: "absolute", right: 10, top: 15,}}
                         >
                             <Text style={{ color: "#fff" }}>👁️</Text>
                         </TouchableOpacity>
@@ -94,7 +111,7 @@ export default function Login() {
                 )}
                 <Nav image={0} onPress={function (): void {
                     throw new Error("Function not implemented.");
-                } } />
+                }} />
             </View>
         </>
     );
