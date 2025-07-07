@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Nav from '../components/nav-bar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 type Produto = {
@@ -17,27 +18,59 @@ type Produto = {
 // Por hora: O useEffect está pegando todos  os produtos do backend
 // Futuras edições: Alterar useEffect para que mostre apenas  os favoritados
 
-// ************ Quando tiver mais produtos no backend, desenvolver scrollview da favorite page ************
+// ************ Fazer  handleRemoverStored ************
+
 
 
 
 export default function CartScreen() {
 
-  const [data, setData] = useState<Produto[]>([]);
+const [data, setData] = useState<Produto[]>([]);
 
- useEffect(() => {
-  const fetchData = async () => {
+useEffect(() => {
+  const fetchFavoritedProducts = async () => {
     try {
+      // 1. Buscar os favoritos salvos
+      const stored = await AsyncStorage.getItem('favoritos');
+      const favoritos: { id: number }[] = stored ? JSON.parse(stored) : [];
+
+      if (favoritos.length === 0) {
+        setData([]);
+        return;
+      }
+
+      // 2. Buscar todos os produtos da API
       const response = await apiVcEspumados.get<Produto[]>('/products');
-      console.log('Dados da API:', response.data); // <--- Aqui
-      setData(response.data);
+
+      // 3. Filtrar apenas os produtos favoritos
+      const produtosFiltrados = response.data.filter(produto =>
+        favoritos.some(fav => fav.id === produto.id)
+      );
+
+      setData(produtosFiltrados);
     } catch (error) {
-      console.error('Erro ao buscar produtos:', error);
+      console.error('Erro ao carregar produtos favoritos:', error);
     }
   };
 
-  fetchData();
+  fetchFavoritedProducts();
 }, []);
+
+  // const handleRemoveFavoriteProduct =  async () => {
+  //   try {
+  //   const stored = await AsyncStorage.getItem('favoritos');
+  //   const favoritos: { id: number, name: string }[] = stored ? JSON.parse(stored) : [];
+
+  //   const nomeProduto = favoritos.find(nome => nome.name)
+
+  //   const atualizados = favoritos.filter(Produto => Produto.name);
+
+  //   await AsyncStorage.setItem('favoritos', JSON.stringify(atualizados));
+  //   AsyncStorage.removeItem()
+  // } catch (error) {
+  //   console.error('Erro ao remover favorito:', error);
+  // }
+  // }
 
 const handleProduct = (item: Produto) => {
   console.log(item.id)
@@ -75,7 +108,6 @@ const handleProduct = (item: Produto) => {
                 keyExtractor={(item) => item.id.toString()}
                 />
          </SafeAreaView>
-
       </View>
       </ScrollView>
       <Nav/>

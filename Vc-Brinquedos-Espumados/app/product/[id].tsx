@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { apiVcEspumados } from '@/api/apiVcEspumados';
 
-//Criar Função de cores para aplicar no styles da pagina
-//Seguir um padrao de id? [ex: a cada id par tiver um padrao de cores, e impar tiver outro]
+//Criar Função de cores para aplicar no styles da pagina [x]
+//Seguir um padrao de id? [ex: a cada id par tiver um padrao de cores, e impar tiver outro] 
 
 
 type Produto = {
@@ -22,9 +22,6 @@ export default function ProductDetail() {
   const [product, setProduct] = useState<Produto>();
   const [selected, setSelected] = useState(1);
 
-  const colorHandler = () => {
-    
-  };
 
   useEffect(() => {
     if (id) {

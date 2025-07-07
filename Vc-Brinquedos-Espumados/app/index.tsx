@@ -1,13 +1,26 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
 import Nav from '../components/nav-bar';
 import InfoModal from "./modal";
+import { apiVcEspumados } from '@/api/apiVcEspumados';
+import { Card } from '@/components/card';
+import { router } from 'expo-router';
+
+type Produto = {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  price: number;
+};
 
 
 export default function HomeScreen() {
 
   const [isModalVisible, setModalVisible] = useState(false);
+  const [data, setData] = useState<Produto[]>([]);
+  
 
   useEffect(() => {
     const checkModalStatus = async () => {
@@ -22,8 +35,28 @@ export default function HomeScreen() {
       }
     };
 
+    const fetchData = async () => {
+        try {
+          const response = await apiVcEspumados.get<Produto[]>('/products');
+          console.log('Dados da API:', response.data); // <--- Aqui
+          setData(response.data);
+        } catch (error) {
+          console.error('Erro ao buscar produtos:', error);
+        }
+      };    
+
     checkModalStatus();
+    fetchData();
   }, []);
+
+  const handleProduct = (item: Produto) => {
+    console.log(item.id)
+    router.push({
+      pathname: '/product/[id]',
+      params: { id: item.id.toString() },
+    });
+  };
+
 
   return (
       <>
@@ -49,7 +82,28 @@ export default function HomeScreen() {
       </View>
 
       <View>
-        <Text>place holder dos cards dos items</Text>
+                <ScrollView style={styles.conteinerCards} alwaysBounceHorizontal={true} horizontal={true}>
+                <SafeAreaView style={styles.wrapCards}>
+                        <FlatList
+                        data={data}
+                        horizontal={true}
+                        style={styles.flatCards}
+                        renderItem={({ item }) => (
+                          <TouchableOpacity onPress={() => handleProduct(item)}  style={{ marginRight: 16 }}>
+                            <Card
+                            name={item.name}
+                            description={item.description}
+                            image={item.image}
+                            price={item.price}
+                            id={item.id}
+                          />
+                          </TouchableOpacity>
+                        )}
+                        keyExtractor={(item) => item.id.toString()}
+                        />
+                 </SafeAreaView>
+              </ScrollView>
+              
       </View>
       <Nav/>
       </>
@@ -101,7 +155,7 @@ const styles = StyleSheet.create({
   Bar: {
     marginHorizontal: 10,
     paddingTop: 10,
-    paddingBottom: 40,
+    paddingBottom: 15,
     flexDirection: 'row'
   },
   Baritem: {
@@ -112,5 +166,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: '25%',
     padding: 5
-  }
+  },
+  conteinerCards:{
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+    height: 350,
+    marginLeft: 0,
+   },
+   wrapCards: {
+    display: 'flex'
+   },
+   flatCards:{
+    marginLeft: 5,
+   }
 });

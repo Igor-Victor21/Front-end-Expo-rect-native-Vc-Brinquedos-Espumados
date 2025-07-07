@@ -6,8 +6,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 
 export const CardFav = ({ name, image, description, price } : {name: string, image: string, description: string, price : number})=> {
-    return (
-      
+    
+  
+  return (
         <LinearGradient
       colors={['rgba(231, 167, 199, 1)', 'rgba(167, 167, 231, 1)']}
       start={{ x: 0.5, y: 0 }}
@@ -32,7 +33,7 @@ export const CardFav = ({ name, image, description, price } : {name: string, ima
         </View>
 
         <TouchableOpacity style={styles.conteinerIcon}>
-          <Image style={styles.favIcon} source={require('../assets/image/heart.png')} />
+          <Image style={styles.favIcon} source={require('../assets/image/favorite-test-sem-figma.png')} />
         </TouchableOpacity>
       </View>
     </LinearGradient>
@@ -116,10 +117,11 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     left: '140%',
-    top: "15%"
+    top: "5%",
+    
     },
     favIcon:{
     width: 20,
-    height: 20
+    height: 20,
     }
 })
