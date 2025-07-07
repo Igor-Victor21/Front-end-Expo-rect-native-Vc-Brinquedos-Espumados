@@ -1,11 +1,9 @@
-import { StyleSheet, Image, TouchableOpacity, Text, SafeAreaView, FlatList, ScrollView } from 'react-native';
-import Nav from '../components/nav-bar';
-import { View } from 'react-native';
-import { CardFav } from '@/components/cardFavorite';
-import { useEffect, useState } from 'react';
-import { router } from 'expo-router';
 import { apiVcEspumados } from '@/api/apiVcEspumados';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CardFav } from '@/components/cardFavorite';
+import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Nav from '../components/nav-bar';
 
 
 type Produto = {
@@ -51,7 +49,6 @@ const handleProduct = (item: Produto) => {
 
   return (
       <>
-      <Nav/>
       <View style={styles.conteinerTop}>
         <Text style={styles.favoriteTT}>Favoritos</Text>
         <View style={styles.conteinerItems}>
@@ -81,6 +78,7 @@ const handleProduct = (item: Produto) => {
 
       </View>
       </ScrollView>
+      <Nav/>
       </>
 
   );

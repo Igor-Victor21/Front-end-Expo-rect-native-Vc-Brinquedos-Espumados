@@ -1,16 +1,28 @@
 import { Link, Stack } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
-
+import { useState } from 'react';
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function NotFoundScreen() {
+  const [hover, setHover] = useState(false);
+
+  //fazer o hover do botão
+  //colocar background, imagem final e style final
+
   return (
     <>
-      <Stack.Screen options={{ title: 'Página não encontrada' }} />
+      <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.container}>
-        <Text>This screen does not exist.</Text>
-        <Link href="/" style={styles.link}>
-          <Text>Go to home screen!</Text>
+        <Image style={styles.img} source={require('../assets/image/test-img-header.png')}/>
+        <Text>Página não encontrada</Text>
+        <Pressable
+          onHoverIn={() => setHover(true)}
+          onHoverOut={() => setHover(false)}
+          style={[styles.btn, hover && styles.btnHover]}
+        >
+        <Link href={"/"} style={styles.link}>
+            <Text>Clique para voltar</Text>
         </Link>
+        </Pressable>
       </View>
     </>
   );
@@ -23,8 +35,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
+  img: {
+    top: '-20%'
   },
+  btn: {
+    
+  },
+  btnHover: {
+
+  },
+  link: {
+    marginTop: 25,
+    paddingVertical: 10,
+    borderWidth: 2,
+    borderRadius: 20
+  }
 });

@@ -3,8 +3,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function CartScreen() {
 
-
-
   return (
       <>
       <View style={styles.Header}>
