@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity , Modal, Image} from 'react-native';
+import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 
 export default function InfoModal({ visible, onClose }: { visible: boolean, onClose: () => void }) {
@@ -33,8 +33,7 @@ const styles = StyleSheet.create({
     height: 45,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#73499b',
-    opacity: 1
+    backgroundColor: '#A7C7E7',
   },
   btnImg: {
     objectFit: 'fill',
@@ -54,7 +53,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',  
   },
   infoText: {
+    fontSize: 14,
     paddingTop: 20,
-    marginBottom: 30,
+    marginBottom: 100,
   }
 })

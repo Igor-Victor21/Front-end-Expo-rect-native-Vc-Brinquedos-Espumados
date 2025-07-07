@@ -1,10 +1,10 @@
 import { router } from 'expo-router';
-import { Image, ImageSourcePropType, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-type NavItemsProps = {
-  image: ImageSourcePropType;
-  onPress: () => void;
-}
+// type NavItemsProps = {
+//   image: ImageSourcePropType;
+//   onPress: () => void;
+// }
 
 const icons = [{image: require('../assets/image/home-teste-sem-figma.png'),
                 onPress: () => router.push("/")
@@ -23,7 +23,7 @@ const icons = [{image: require('../assets/image/home-teste-sem-figma.png'),
 //Fazer o handlepress pra animação do navbar
 //Melhorar o css pra animação
 
-export default function Nav({}: NavItemsProps) {
+export default function Nav() {
 
   return (
     //primeira página a ser aberta showroom provavelmente fica aki
@@ -43,7 +43,7 @@ export default function Nav({}: NavItemsProps) {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    // flex: 1, 
     // backgroundColor: '#fff', // ou qualquer cor que ajude a ver a nav
     // justifyContent: 'flex-start',
   },
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#A7C7E7',
     zIndex: 999,
-    elevation: 10,
+    // elevation: 10,
   },
   options: {
     flex: 1,

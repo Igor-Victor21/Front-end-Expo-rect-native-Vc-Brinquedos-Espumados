@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Nav from '../components/nav-bar';
 import InfoModal from "./modal";
 
@@ -29,9 +29,8 @@ export default function HomeScreen() {
       <>
       <InfoModal visible={isModalVisible} onClose={() => setModalVisible(false)} />
       <View style={styles.Card}>
-        <TouchableOpacity style={styles.UserImage}>
-          {/* <Image source={require('../assets/image/user-test-sem-figma.png')}/> */}
-          🙋‍♂️
+        <TouchableOpacity style={styles.UserImagePosition}>
+          <Image style={styles.UserImage} source={require('../assets/image/user-test-sem-figma.png')}/>
         </TouchableOpacity>
         <Text style={styles.MessageIntro}>Bom dia Michely!</Text>
         <Text style={styles.Slogan}>Tenha momentos divertidos e únicos com seus filhos com a VC brinquedos Espumados</Text>
@@ -68,9 +67,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#A7C7E7',
     borderRadius: 10
   },
-  UserImage: {
+  UserImagePosition: {
     width: '10%',
     right: '-90%',
+  },
+  UserImage:{
+    width: 25,
+    height: 25
   },
   MessageIntro: {
     fontWeight: 'bold',
