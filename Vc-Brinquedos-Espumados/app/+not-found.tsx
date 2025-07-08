@@ -1,41 +1,72 @@
 import { Link } from 'expo-router';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native';
+import Info from '../components/cellphoneInfo';
 
 export default function NotFoundScreen() {
 
   return (
     <>
-      <View style={styles.container}>
-        <Image style={styles.img} source={require('../assets/image/test-img-header.png')}/>
-        <Text style={styles.text}>Página não encontrada</Text>
-        <Link href={"/"} style={styles.link}>
-            <Text>Clique para voltar</Text>
-        </Link>
-      </View>
+    <Info/>
+    <View style={styles.containerImg}>
+      <ImageBackground
+        style={styles.img}
+        source={require('../assets/image/Erro404.png')}
+        resizeMode='cover'>
+      </ImageBackground>
+    </View>
+    <View style={styles.container}>
+      <Text style={styles.h1}>ERROR</Text>
+      <Text style={styles.h3}>Oops!</Text>
+      <Text style={styles.p}>A página que você está tentando acessar não foi encontrada.</Text>
+      <Image source={require('../assets/image/AnimationCat.gif')} style={styles.gif}/>
+      <Link href={"/"} style={styles.link}>
+        <Text>Voltar para a tela inicial</Text>
+      </Link>
+    </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  containerImg: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20
   },
   img: {
-    top: '-20%'
+    width: "100%",
+    height: 354,
+    top: "15%",
+    left: -3,
   },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    bottom: 65
+  container: {
+    alignItems: 'center',
+  },
+  h1: {
+    paddingBottom: "25%",
+    fontSize: 77,
+    fontWeight: '900',
+    color: '#252525'
+  },
+  h3: {
+    fontSize: 32,
+    fontWeight: '500',
+    paddingVertical: 15
+  },
+  p: {
+    textAlign: 'center',
+    fontSize: 15,
+    maxWidth: "80%"
+  },
+  gif: {
+    width: 116,
+    height: 85,
+    bottom: "-10%"
   },
   link: {
-    marginTop: 25,
-    padding: 5,
-    borderWidth: 2,
-    borderRadius: 20,
-    backgroundColor: 'grey'
+    marginVertical: 50,
+    paddingHorizontal: 50,
+    paddingVertical: 20,
+    borderRadius: 999,
+    backgroundColor: '#252525',
+    color: '#f6f6f6',
   }
 });
