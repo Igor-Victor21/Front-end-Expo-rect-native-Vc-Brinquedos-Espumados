@@ -1,10 +1,10 @@
+import { apiVcEspumados } from "@/api/apiVcEspumados";
 import Nav from "@/components/nav-bar";
-import { Header } from "../components/header";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { apiVcEspumados } from "@/api/apiVcEspumados";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Header } from "../components/header";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -14,28 +14,60 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [selectedTab, setSelectedTab] = useState("login");
 
-    //Função para realizar login 
-    const handleLogin = async () => {
-        //tentando buscar por todos os usuários com o mesmo email e senha
+    // Variável usada para criar um novo usuário
+    const [newUserData, setNewUserData] = useState({
+        fullName: '', email: '', password: '', cpf: '', socialReason: '', stateRegistration: '', cnpj: '', cep: '', uf: '', city: '', neighborhood: '', road: '', numberHouse: 0, complement: '', numberPhone: '', dateOfBirth: ''
+    });
+
+    // Labels para os campos do usuário
+    const labels = {
+        fullName: "Nome Completo",
+        email: "E-mail",
+        password: "Senha",
+        cpf: "CPF",
+        socialReason: "Razão Social",
+        stateRegistration: "Inscrição Estadual",
+        cnpj: "CNPJ",
+        cep: "CEP",
+        uf: "UF",
+        city: "Cidade",
+        neighborhood: "Bairro",
+        road: "Rua",
+        numberHouse: "Número",
+        complement: "Complemento",
+        numberPhone: "Telefone",
+        dateOfBirth: "Data de Nascimento"
+    };
+
+    // Função para criar usuário
+    const handleCreateUser = async () => {
         try {
-            //variavel response espera a resposta da Api apiVcEspumados dos dados dos usuários
+            const body = { ...newUserData, numberHouse: Number(newUserData.numberHouse) };
+            await apiVcEspumados.post('/users', body);
+            setMessage("Usuário criado com sucesso!");
+            setTimeout(() => setMessage(""), 3000);
+            setSelectedTab("login");
+            setNewUserData({
+                fullName: '', email: '', password: '', cpf: '', socialReason: '', stateRegistration: '', cnpj: '', cep: '', uf: '', city: '', neighborhood: '', road: '', numberHouse: 0, complement: '', numberPhone: '', dateOfBirth: ''
+            });
+        } catch (err) {
+            setMessage('Erro ao criar o usuário');
+            setTimeout(() => setMessage(""), 3000);
+        }
+    };
+
+    const handleLogin = async () => {
+        try {
             const response = await apiVcEspumados.get('/users');
-            //variavel users recebe os dados dos usuários
             const users = response.data;
-            //variavel foundUser recebe os dados dos usuários
-            //e tenta encontrar dentro da api um email e uma senha igual, a que o usuário informou 
             const foundUser = users.find(
                 (u) => u.email === email && u.password === password
             );
-            //condiconal para quando o usuário errar o email ou senha, aparece mensagem de erro
-            //deixa a mensagem de erro aparecer durante 3 segundos
-            if (!foundUser) {//(!foundUser) se o usuário não for encontrado
-                setMessage("Email ou senha incorretos");//exiba esta mensagem 
-                setTimeout(() => setMessage(""), 3000);  //remove mensagem após 3 segundos
+            if (!foundUser) {
+                setMessage("Email ou senha incorretos");
+                setTimeout(() => setMessage(""), 3000);
                 return;
             }
-            //caso ele passe pela condicional de email ou senha incorretos 
-            //o usuário tem a permissão para acessar a rota user onde fica os dados do usuário
             await AsyncStorage.setItem('user', JSON.stringify(foundUser));
             setUser(foundUser);
 
@@ -45,10 +77,9 @@ export default function Login() {
                 router.push('/user');
             }
 
-
         } catch (error) {
             setMessage('Erro ao tentar logar: ' + (error.message || 'Erro desconhecido'));
-            setTimeout(() => setMessage(""), 3000);  // Remove mensagem após 3 segundos
+            setTimeout(() => setMessage(""), 3000);
         }
     };
 
@@ -89,21 +120,45 @@ export default function Login() {
                 </View>
             </View>
             <View style={styles.wrapLogin}>
-                <View style={styles.containerLogin}>
-                    <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder="Nome de usuário ou E-mail" keyboardType="email-address" placeholderTextColor="#ccc" />
-                    <View>
-                        <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder="Senha" keyboardType="default" secureTextEntry={!showPassword} placeholderTextColor="#ccc" />
-                        <TouchableOpacity onPress={() => setShowPassword(prev => !prev)}style={{position: "absolute", right: 10, top: 15,}}
-                        >
-                            <Text style={{ color: "#fff" }}>👁️</Text>
-                        </TouchableOpacity>
+                {selectedTab === 'login' && (
+                    <View style={styles.containerLogin}>
+                        <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder="Nome de usuário ou E-mail" keyboardType="email-address" placeholderTextColor="#ccc" />
+                        <View>
+                            <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder="Senha" keyboardType="default" secureTextEntry={!showPassword} placeholderTextColor="#ccc" />
+                            <TouchableOpacity onPress={() => setShowPassword(prev => !prev)} style={{ position: "absolute", right: 10, top: 15 }}>
+                                <Text style={{ color: "#fff" }}>👁️</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.wrapButton}>
+                            <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                                <Text style={styles.btnText}>ENTRAR</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                    <View style={styles.wrapButton}>
-                        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                            <Text style={styles.btnText}>ENTRAR</Text>
+                )}
+
+                {selectedTab === 'register' && (
+                    <ScrollView contentContainerStyle={styles.containerLogin}>
+                        {Object.entries(newUserData).map(([key, value]) => (
+                            <View key={key} style={{ marginBottom: 12 }}>
+                                <Text style={{ color: '#fff', marginBottom: 6, fontWeight: 'bold' }}>
+                                    {labels[key] || key}
+                                </Text>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder={labels[key] || key}
+                                    placeholderTextColor="#ccc"
+                                    value={String(value)}
+                                    onChangeText={(text) => setNewUserData({ ...newUserData, [key]: key === 'numberHouse' ? Number(text) : text })}
+                                />
+                            </View>
+                        ))}
+                        <TouchableOpacity style={styles.button} onPress={handleCreateUser}>
+                            <Text style={styles.btnText}>CRIAR CONTA</Text>
                         </TouchableOpacity>
-                    </View>
-                </View>
+                    </ScrollView>
+                )}
+
                 {message && (
                     <View style={styles.errorMessageContainer}>
                         <Text style={styles.errorMessageText}>{message}</Text>
@@ -131,7 +186,7 @@ const styles = StyleSheet.create({
         borderRadius: 999,
         opacity: 0.8,
         width: 250,
-        marginTop: 100,
+        marginTop: 20,
     },
     btnContainerLeft: {
         flex: 1,
@@ -168,6 +223,7 @@ const styles = StyleSheet.create({
     containerLogin: {
         width: 300,
         gap: 10,
+        paddingBottom: 20
     },
     input: {
         paddingHorizontal: 10,

@@ -8,7 +8,8 @@ export default function User() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user'); // Buscar o usuário do localStorage
+    //buscar o usuário do localStorage
+    const storedUser = localStorage.getItem('user'); 
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     } else {
@@ -16,28 +17,33 @@ export default function User() {
     }
   }, []);
 
+  // função de sair e limpa o localStorage
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(null);
     router.push('/login');
   };
 
+  //função de deletar a conta do usuário
   const handleDeleteAccount = async () => {
     if (!user || !user.id) return;
 
     try {
-      // Chamada para API DELETE para excluir o usuário do banco de dados
+      //chamando a Api para deletar o usuário utilizando o Id do usuário
       await apiVcEspumados.delete(`/users/${user.id}`);
       
-      // Depois de deletar o usuário, remove do localStorage e faz o logout
+      //depois de deletar o usuário, remove do localStorage e faz o logout
       localStorage.removeItem('user');
       setUser(null);
       router.push('/login');
+      //caso não funcione, vai exibir uma mensagem para o usuário no console
     } catch (err) {
       console.error('Erro ao deletar conta:', err);
     }
   };
 
+  //condicional se não estiver logado e tentar entrar na rota /user
+  //exibe um mensagem e logo em seguida mostra um botão para voltar de  volta para o login
   if (!user) {
     return (
       <View style={styles.wrapPage}>
@@ -49,6 +55,7 @@ export default function User() {
     );
   }
 
+  //informações do usuário
   return (
     <>
       <View style={styles.wrapPage}>
@@ -73,17 +80,18 @@ export default function User() {
           <Text>Data de nascimento: {user.dateOfBirth}</Text>
         </View>
         
-        {/* Botão de Sair */}
+        {/* botão de sair */}
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutText}>Sair</Text>
         </TouchableOpacity>
 
-        {/* Botão de Deletar Conta */}
+        {/* botão de deletar conta */}
         <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
           <Text style={styles.deleteText}>Deletar Conta</Text>
         </TouchableOpacity>
       </View>
 
+      {/* nav-bar */}
       <Nav image={0} onPress={function (): void {
         throw new Error('Function not implemented.');
       }} />
@@ -91,6 +99,7 @@ export default function User() {
   );
 }
 
+// CSS
 const styles = StyleSheet.create({
   wrapPage: {
     flex: 1,
