@@ -3,7 +3,15 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { StyleSheet, Text, Image, View, TouchableOpacity } from 'react-native';
 
-export const Card = ({ name, image, description, price, id  } : {name: string, image: string, description: string, price : number, id: number})=> {
+interface Props{
+  name: string,
+  image: string,
+  description: string,
+  price: Number,
+  id: Number,
+}
+
+export const Card = ({ name, image, description, price, id } : Props)=> {
   
   const [productFavorite, setProductFavorite] = useState(false);
 

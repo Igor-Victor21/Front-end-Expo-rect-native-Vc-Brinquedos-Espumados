@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { apiVcEspumados } from '@/api/apiVcEspumados';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //Criar Função de cores para aplicar no styles da pagina [x]
 //Seguir um padrao de id? [ex: a cada id par tiver um padrao de cores, e impar tiver outro] 
@@ -15,24 +16,47 @@ type Produto = {
   price: number;
 };
 
+
 export default function ProductDetail() {
   const { id } = useLocalSearchParams();
   console.log('ID recebido:', id)
   const router = useRouter();
   const [product, setProduct] = useState<Produto>();
   const [selected, setSelected] = useState(1);
+  
 
 
   useEffect(() => {
     if (id) {
+      const idNumber = Number(id);
       apiVcEspumados
-        .get(`/products/${id}`)
+        .get(`/products/${idNumber}`)
         .then(res => setProduct(res.data))
         .catch(err => console.error('Erro ao buscar produto:', err));
     }
   }, [id]);
 
   if (!product) return <Text>Carregando...</Text>;
+
+ const handleFavoriteProduct = async () => {
+  try {
+    // Pega os favoritos existentes
+    const stored = await AsyncStorage.getItem('favoritos');
+    const favoritos: Produto[] = stored ? JSON.parse(stored) : [];
+
+    // Verifica se já está favoritado
+    const idNumber = Number(id);
+    const jaExiste = favoritos.some(produto => produto.id === idNumber);
+
+    if (!jaExiste && product) {
+      const novosFavoritos = [...favoritos, product];
+      await AsyncStorage.setItem('favoritos', JSON.stringify(novosFavoritos));
+      // setProductFavorite(true);
+    }
+  } catch (error) {
+    console.error('Erro ao favoritar produto:', error);
+  }
+};
 
   return (
     <ScrollView  style={styles.conteiner}>
@@ -44,7 +68,7 @@ export default function ProductDetail() {
           <Text style={styles.returnBtn}>⬅</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.favIconConteiner}>
+        <TouchableOpacity style={styles.favIconConteiner} onPress={handleFavoriteProduct}>
           <Image
             style={styles.favIcon}
             source={require('@/assets/image/heart.png')}

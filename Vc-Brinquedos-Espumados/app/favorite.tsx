@@ -15,8 +15,6 @@ type Produto = {
   price: number;
 };
 
-// Por hora: O useEffect está pegando todos  os produtos do backend
-// Futuras edições: Alterar useEffect para que mostre apenas  os favoritados
 
 // ************ Fazer  handleRemoverStored ************
 
@@ -56,21 +54,23 @@ useEffect(() => {
   fetchFavoritedProducts();
 }, []);
 
-  // const handleRemoveFavoriteProduct =  async () => {
-  //   try {
-  //   const stored = await AsyncStorage.getItem('favoritos');
-  //   const favoritos: { id: number, name: string }[] = stored ? JSON.parse(stored) : [];
+const handleRemoveFavoriteProduct = async (id: number) => {
+  try {
+    const stored = await AsyncStorage.getItem('favoritos');
+    const favoritos: { id: number, name: string }[] = stored ? JSON.parse(stored) : [];
 
-  //   const nomeProduto = favoritos.find(nome => nome.name)
+    // Remove do array
+    const atualizados = favoritos.filter(produto => produto.id !== id);
 
-  //   const atualizados = favoritos.filter(Produto => Produto.name);
+    // Salva de volta
+    await AsyncStorage.setItem('favoritos', JSON.stringify(atualizados));
 
-  //   await AsyncStorage.setItem('favoritos', JSON.stringify(atualizados));
-  //   AsyncStorage.removeItem()
-  // } catch (error) {
-  //   console.error('Erro ao remover favorito:', error);
-  // }
-  // }
+    // Atualiza o estado local para sumir da tela
+    setData(prev => prev.filter(produto => produto.id !== id));
+  } catch (error) {
+    console.error('Erro ao remover favorito:', error);
+  }
+};
 
 const handleProduct = (item: Produto) => {
   console.log(item.id)
@@ -79,6 +79,7 @@ const handleProduct = (item: Produto) => {
     params: { id: item.id.toString() },
   });
 };
+
 
   return (
       <>
@@ -102,6 +103,8 @@ const handleProduct = (item: Produto) => {
                     description={item.description}
                     image={item.image}
                     price={item.price}
+                    id={item.id}
+                    onUnfavorite={handleRemoveFavoriteProduct} 
                   />
                   </TouchableOpacity>
                 )}

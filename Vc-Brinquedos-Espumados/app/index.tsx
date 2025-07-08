@@ -1,11 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
+import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image, Animated } from 'react-native';
 import Nav from '../components/nav-bar';
 import InfoModal from "./modal";
 import { apiVcEspumados } from '@/api/apiVcEspumados';
 import { Card } from '@/components/card';
 import { router } from 'expo-router';
+
+
 
 type Produto = {
   id: number;
@@ -20,6 +22,7 @@ export default function HomeScreen() {
 
   const [isModalVisible, setModalVisible] = useState(false);
   const [data, setData] = useState<Produto[]>([]);
+  
   
 
   useEffect(() => {
@@ -56,7 +59,6 @@ export default function HomeScreen() {
       params: { id: item.id.toString() },
     });
   };
-
 
   return (
       <>
@@ -96,6 +98,7 @@ export default function HomeScreen() {
                             image={item.image}
                             price={item.price}
                             id={item.id}
+                        
                           />
                           </TouchableOpacity>
                         )}
@@ -112,6 +115,7 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+
    Card: {
     display: 'flex',
     paddingVertical: 20,

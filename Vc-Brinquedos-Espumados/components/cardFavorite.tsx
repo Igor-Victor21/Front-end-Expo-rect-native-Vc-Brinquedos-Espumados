@@ -1,12 +1,35 @@
 import { StyleSheet, Text, Image, View, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState } from 'react';
 
 
+type Props = {
+  name: string;
+  image: string;
+  description: string;
+  price: number;
+  id: number;
+  onUnfavorite: (id: number) => void;
+};
 
+export const CardFav = ({ name, image, description, price, id, onUnfavorite } : Props )=> {
+  const [productFavorite, setProductFavorite] = useState(true);
 
+  const handleUnfavoriteProduct = async () => {
+  try {
+    const stored = await AsyncStorage.getItem('favoritos');
+    const favoritos: { id: number, name: string }[] = stored ? JSON.parse(stored) : [];
 
-export const CardFav = ({ name, image, description, price } : {name: string, image: string, description: string, price : number})=> {
-    
+    const atualizados = favoritos.filter(produto => produto.id !== id);
+
+    await AsyncStorage.setItem('favoritos', JSON.stringify(atualizados));
+    setProductFavorite(false);
+    onUnfavorite(id);
+  } catch (error) {
+    console.error('Erro ao remover favorito:', error);
+  }
+};
   
   return (
         <LinearGradient
@@ -32,7 +55,7 @@ export const CardFav = ({ name, image, description, price } : {name: string, ima
           <Text style={styles.showPrice}>R$ {price.toFixed(2)}</Text>
         </View>
 
-        <TouchableOpacity style={styles.conteinerIcon}>
+        <TouchableOpacity style={styles.conteinerIcon} onPress={handleUnfavoriteProduct}>
           <Image style={styles.favIcon} source={require('../assets/image/favorite-test-sem-figma.png')} />
         </TouchableOpacity>
       </View>
