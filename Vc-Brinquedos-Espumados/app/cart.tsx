@@ -1,10 +1,12 @@
 import { router } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Info from '../components/cellphoneInfo';
 
 export default function CartScreen() {
 
   return (
       <>
+      <Info/>
       <View style={styles.Header}>
         <TouchableOpacity style={styles.Button} onPress={() => router.push("/")}>⬅</TouchableOpacity>
         <Text style={styles.NameRoute}>Carrinho</Text>

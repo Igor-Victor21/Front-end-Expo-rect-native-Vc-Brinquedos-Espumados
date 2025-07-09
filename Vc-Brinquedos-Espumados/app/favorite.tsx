@@ -1,10 +1,11 @@
 import { apiVcEspumados } from '@/api/apiVcEspumados';
 import { CardFav } from '@/components/cardFavorite';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Info from '../components/cellphoneInfo';
 import Nav from '../components/nav-bar';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 type Produto = {
@@ -83,6 +84,7 @@ const handleProduct = (item: Produto) => {
 
   return (
       <>
+      <Info/>
       <View style={styles.conteinerTop}>
         <Text style={styles.favoriteTT}>Favoritos</Text>
         <View style={styles.conteinerItems}>

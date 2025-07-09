@@ -34,14 +34,13 @@ const styles = StyleSheet.create({
   img: {
     width: "100%",
     height: 354,
-    top: "15%",
+    top: "25%",
     left: -3,
   },
   container: {
     alignItems: 'center',
   },
   h1: {
-    paddingBottom: "25%",
     fontSize: 77,
     fontWeight: '900',
     color: '#252525'
@@ -59,7 +58,7 @@ const styles = StyleSheet.create({
   gif: {
     width: 116,
     height: 85,
-    bottom: "-10%"
+    bottom: "-12%"
   },
   link: {
     marginVertical: 50,

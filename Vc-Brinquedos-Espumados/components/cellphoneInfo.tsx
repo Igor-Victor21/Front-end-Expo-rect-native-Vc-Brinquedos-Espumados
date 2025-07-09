@@ -29,7 +29,7 @@ export default function ErrorScreen() {
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View>
       {/* STATUS BAR CUSTOMIZADA */}
       <View style={styles.statusBar}>
         <Text style={styles.time}>{time}</Text>
@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   statusBar: {
     height: 40,
     paddingHorizontal: 15,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',

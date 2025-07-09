@@ -1,11 +1,12 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useState } from 'react';
-import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image, Animated } from 'react-native';
-import Nav from '../components/nav-bar';
-import InfoModal from "./modal";
 import { apiVcEspumados } from '@/api/apiVcEspumados';
 import { Card } from '@/components/card';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import InfoCell from '../components/cellphoneInfo';
+import Nav from '../components/nav-bar';
+import InfoModal from "./modal";
 
 
 
@@ -63,6 +64,7 @@ export default function HomeScreen() {
   return (
       <>
       <InfoModal visible={isModalVisible} onClose={() => setModalVisible(false)} />
+      <InfoCell/>
       <View style={styles.Card}>
         <TouchableOpacity style={styles.UserImagePosition}>
           <Image style={styles.UserImage} source={require('../assets/image/user-test-sem-figma.png')}/>
