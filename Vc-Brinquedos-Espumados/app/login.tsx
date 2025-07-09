@@ -1,5 +1,4 @@
 import { apiVcEspumados } from "@/api/apiVcEspumados";
-import Nav from "@/components/nav-bar";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
@@ -102,7 +101,9 @@ export default function Login() {
 
     return (
         <>
+        <View>
             <Header image={require("../assets/image/gif-criancas-cubo.gif")} />
+        </View>
             <View style={styles.body}>
                 <View style={styles.containerButton}>
                     <TouchableOpacity
@@ -164,9 +165,6 @@ export default function Login() {
                         <Text style={styles.errorMessageText}>{message}</Text>
                     </View>
                 )}
-                <Nav image={0} onPress={function (): void {
-                    throw new Error("Function not implemented.");
-                }} />
             </View>
         </>
     );

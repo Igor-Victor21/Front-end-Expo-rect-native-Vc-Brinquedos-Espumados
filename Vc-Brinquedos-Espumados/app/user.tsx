@@ -1,17 +1,21 @@
 import { apiVcEspumados } from '@/api/apiVcEspumados'; // Supondo que sua API seja configurada assim
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Nav from '../components/nav-bar';
 
 export default function User() {
   const [user, setUser] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editData, setEditData] = useState({});
 
   useEffect(() => {
     //buscar o usuário do localStorage
     const storedUser = localStorage.getItem('user'); 
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      setEditData(parsedUser);
     } else {
       console.log("Usuário não encontrado no localStorage");
     }
@@ -42,6 +46,37 @@ export default function User() {
     }
   };
 
+  //função para atualizar os dados do usuário
+  const handleUpdate = async () => {
+    try {
+      await apiVcEspumados.put(`/users/${user.id}`, editData);
+      setUser(editData);
+      localStorage.setItem('user', JSON.stringify(editData));
+      setEditMode(false);
+    } catch (err) {
+      console.error('Erro ao atualizar usuário:', err);
+    }
+  };
+
+  const labels = {
+    fullName: 'Nome Completo',
+    email: 'E-mail',
+    password: 'Senha',
+    cpf: 'CPF',
+    socialReason: 'Razão Social',
+    stateRegistration: 'Inscrição Estadual',
+    cnpj: 'CNPJ',
+    cep: 'CEP',
+    uf: 'Estado',
+    city: 'Cidade',
+    neighborhood: 'Bairro',
+    road: 'Rua',
+    numberHouse: 'Número',
+    complement: 'Complemento',
+    numberPhone: 'Telefone',
+    dateOfBirth: 'Data de Nascimento',
+  };
+
   //condicional se não estiver logado e tentar entrar na rota /user
   //exibe um mensagem e logo em seguida mostra um botão para voltar de  volta para o login
   if (!user) {
@@ -58,43 +93,66 @@ export default function User() {
   //informações do usuário
   return (
     <>
-      <View style={styles.wrapPage}>
+      <ScrollView contentContainerStyle={styles.wrapPage}>
         <Text style={styles.titleName}>Detalhes do Usuário</Text>
+
+        {/* botão para editar os dados */}
+        {!editMode ? (
+          <TouchableOpacity style={styles.editButton} onPress={() => setEditMode(true)}>
+            <Text style={styles.editText}>Editar</Text>
+          </TouchableOpacity>
+        ) : (
+          <>
+            <TouchableOpacity style={styles.saveButton} onPress={handleUpdate}>
+              <Text style={styles.saveText}>Salvar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cancelButton} onPress={() => setEditMode(false)}>
+              <Text style={styles.cancelText}>Cancelar</Text>
+            </TouchableOpacity>
+          </>
+        )}
+
         {/* Renderizando os dados do usuário */}
         <View style={styles.itemList}>
-          <Text>Nome Completo: {user.fullName}</Text>
-          <Text>E-mail: {user.email}</Text>
-          <Text>Senha: {user.password}</Text>
-          <Text>CPF: {user.cpf}</Text>
-          <Text>Razão Social: {user.socialReason}</Text>
-          <Text>Registro Estadual: {user.stateRegistration}</Text>
-          <Text>CNPJ: {user.cnpj}</Text>
-          <Text>CEP: {user.cep}</Text>
-          <Text>Estado: {user.uf}</Text>
-          <Text>Cidade: {user.city}</Text>
-          <Text>Bairro: {user.neighborhood}</Text>
-          <Text>Rua: {user.road}</Text>
-          <Text>Número da Residência: {user.numberHouse}</Text>
-          <Text>Complemento: {user.complement}</Text>
-          <Text>Telefone: {user.numberPhone}</Text>
-          <Text>Data de nascimento: {user.dateOfBirth}</Text>
-        </View>
-        
-        {/* botão de sair */}
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutText}>Sair</Text>
-        </TouchableOpacity>
+          {Object.entries(user).map(([key, value]) => {
+            if (key === 'id') return null;
 
-        {/* botão de deletar conta */}
-        <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
-          <Text style={styles.deleteText}>Deletar Conta</Text>
-        </TouchableOpacity>
-      </View>
+            return (
+              <View key={key} style={styles.itemRow}>
+                <Text style={styles.label}>{labels[key] || key}:</Text>
+                {editMode ? (
+                  <TextInput
+                    style={styles.input}
+                    value={String(editData[key])}
+                    onChangeText={(text) =>
+                      setEditData({
+                        ...editData,
+                        [key]: key === 'numberHouse' ? Number(text) : text,
+                      })
+                    }
+                  />
+                ) : (
+                  <Text style={styles.value}>{value}</Text>
+                )}
+              </View>
+            );
+          })}
+        </View>
+
+        {/* botões de sair e deletar conta lado a lado */}
+        <View style={styles.rowButtons}>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.logoutText}>Sair</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.deleteButton} onPress={handleDeleteAccount}>
+            <Text style={styles.deleteText}>Deletar Conta</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
 
       {/* nav-bar */}
-      <Nav image={0} onPress={function (): void {
-        throw new Error('Function not implemented.');
-      }} />
+      <Nav image={0} onPress={() => {}} />
     </>
   );
 }
@@ -102,44 +160,111 @@ export default function User() {
 // CSS
 const styles = StyleSheet.create({
   wrapPage: {
-    flex: 1,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 10,
   },
   titleName: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
+    alignSelf: 'center',
   },
   itemList: {
-    backgroundColor: '#A7C7E7',
-    borderRadius: 10,
-    padding: 15,
-    marginVertical: 8,
+    backgroundColor: '#E0ECF8',
+    borderRadius: 12,
+    padding: 12,
+    width: '100%',
+    elevation: 2,
+    marginBottom: 10,
   },
-  logoutButton: {
-    backgroundColor: '#A7C7E7',
-    paddingVertical: 10,
+  itemRow: {
+    marginBottom: 6,
+  },
+  label: {
+    fontWeight: 'bold',
+    fontSize: 13,
+    color: '#333',
+  },
+  value: {
+    fontSize: 13,
+    color: '#444',
+  },
+  input: {
+    backgroundColor: '#fff',
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    fontSize: 13,
+    marginTop: 2,
+  },
+  editButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 8,
     paddingHorizontal: 20,
     borderRadius: 999,
-    marginTop: 20,
+    marginBottom: 12,
+  },
+  editText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  saveButton: {
+    backgroundColor: '#28a745',
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 999,
+    marginBottom: 8,
+  },
+  saveText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  cancelButton: {
+    backgroundColor: '#6c757d',
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 999,
+    marginBottom: 8,
+  },
+  cancelText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: 'bold',
+  },
+  logoutButton: {
+    backgroundColor: '#4B9CD3',
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 999,
+    marginTop: 10,
   },
   logoutText: {
-    color: '#ffffff',
-    fontSize: 16,
+    color: '#fff',
+    fontSize: 15,
     fontWeight: 'bold',
   },
   deleteButton: {
     backgroundColor: '#FF3B30',
-    paddingVertical: 10,
+    paddingVertical: 8,
     paddingHorizontal: 20,
     borderRadius: 999,
-    marginTop: 20,
+    marginTop: 10,
   },
   deleteText: {
-    color: '#ffffff',
-    fontSize: 16,
+    color: '#fff',
+    fontSize: 15,
     fontWeight: 'bold',
+  },
+  rowButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 15,
+    marginTop: 10,
   },
 });
