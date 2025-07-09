@@ -23,10 +23,14 @@ export default function HomeScreen() {
 
   const [isModalVisible, setModalVisible] = useState(false);
   const [data, setData] = useState<Produto[]>([]);
+  const [showToast, setShowToast] = useState(false)
+  const [messageToast, setMessageToast] = useState('')
   
   
 
   useEffect(() => {
+    // Função verifica se o Modal ja foi visto anteriormente, se não foi visto anteriormente, criara uma chave 'hasSeenModal' com o valor 'true'
+    // Não mostrando novamente ao abrir o aplicativo.
     const checkModalStatus = async () => {
       try {
         const hasSeenModal = await AsyncStorage.getItem('hasSeenModal');
@@ -40,6 +44,7 @@ export default function HomeScreen() {
     };
 
     const fetchData = async () => {
+    // Função de fetch dos cards para pegar os dados dos produtos do backend
         try {
           const response = await apiVcEspumados.get<Produto[]>('/products');
           console.log('Dados da API:', response.data); // <--- Aqui
@@ -53,7 +58,9 @@ export default function HomeScreen() {
     fetchData();
   }, []);
 
+  // Função do touchable(cards dos produtos) para levar o usuario para pagina do produto.
   const handleProduct = (item: Produto) => {
+
     console.log(item.id)
     router.push({
       pathname: '/product/[id]',
@@ -61,10 +68,27 @@ export default function HomeScreen() {
     });
   };
 
+  //Função para mostrar Toast ao clicar to Touchable do card.tsx de favorite
+const showCustomToast = (jaExiste: boolean) => {
+  if (!jaExiste) {
+    setMessageToast('Item favoritado!');
+  } else {
+    setMessageToast('Este item já está favoritado!');
+  }
+  setShowToast(true);
+  setTimeout(() => setShowToast(false), 2000);
+};
+
   return (
       <>
+      
       <InfoModal visible={isModalVisible} onClose={() => setModalVisible(false)} />
       <InfoCell/>
+      {showToast && (
+      <View style={styles.toastConteiner}>
+        <Text style={styles.toastMessage}>{messageToast}</Text>
+      </View>
+      )}
       <View style={styles.Card}>
         <TouchableOpacity style={styles.UserImagePosition}>
           <Image style={styles.UserImage} source={require('../assets/image/user-test-sem-figma.png')}/>
@@ -73,7 +97,6 @@ export default function HomeScreen() {
         <Text style={styles.Slogan}>Tenha momentos divertidos e únicos com seus filhos com a VC brinquedos Espumados</Text>
         <TextInput style={styles.SearchBar} placeholder='Procurar'/>
       </View>
-
       <Text style={styles.Text}>Nova Coleção</Text>
 
       <View style={styles.Bar}>
@@ -100,7 +123,7 @@ export default function HomeScreen() {
                             image={item.image}
                             price={item.price}
                             id={item.id}
-                        
+                            toast={(jaExiste) => showCustomToast(jaExiste)}
                           />
                           </TouchableOpacity>
                         )}
@@ -111,18 +134,33 @@ export default function HomeScreen() {
               
       </View>
       <Nav/>
+      
       </>
 
   );
 }
 
 const styles = StyleSheet.create({
-
+  toastConteiner:{
+    position: 'absolute',
+    top: 80,
+    left: 20,
+    right: 20,
+    backgroundColor: 'black',
+    padding: 10,
+    borderRadius: 10,
+    zIndex: 9999,
+    elevation: 9999,
+    alignItems: 'center',
+  },
+  toastMessage:{
+    color: '#fefefe'
+  },
    Card: {
     display: 'flex',
     paddingVertical: 20,
     paddingHorizontal: 10,
-    marginVertical: 20,
+    marginBottom: 20,
     marginHorizontal: 10,
     backgroundColor: '#A7C7E7',
     borderRadius: 10

@@ -3,15 +3,18 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { StyleSheet, Text, Image, View, TouchableOpacity } from 'react-native';
 
+
+
 interface Props{
   name: string,
   image: string,
   description: string,
   price: Number,
   id: Number,
+  toast: (jaExiste: boolean) => void; 
 }
 
-export const Card = ({ name, image, description, price, id } : Props)=> {
+export const Card = ({ name, image, description, price, id, toast } : Props)=> {
   
   const [productFavorite, setProductFavorite] = useState(false);
 
@@ -28,7 +31,11 @@ export const Card = ({ name, image, description, price, id } : Props)=> {
       const novosFavoritos = [...favoritos, { id, name }];
       await AsyncStorage.setItem('favoritos', JSON.stringify(novosFavoritos));
       setProductFavorite(true);
+      console.log('Toast será chamado');
     }
+
+    console.log('Chamando toast com jaExiste:', jaExiste);
+    toast(jaExiste); // ← envia status do favorito
   } catch (error) {
     console.error('Erro ao favoritar produto:', error);
   }

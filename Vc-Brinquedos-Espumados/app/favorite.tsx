@@ -2,7 +2,7 @@ import { apiVcEspumados } from '@/api/apiVcEspumados';
 import { CardFav } from '@/components/cardFavorite';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Info from '../components/cellphoneInfo';
 import Nav from '../components/nav-bar';
@@ -25,6 +25,7 @@ type Produto = {
 export default function CartScreen() {
 
 const [data, setData] = useState<Produto[]>([]);
+const [showToast, setShowToast] = useState(false);
 
 useEffect(() => {
   const fetchFavoritedProducts = async () => {
@@ -68,6 +69,8 @@ const handleRemoveFavoriteProduct = async (id: number) => {
 
     // Atualiza o estado local para sumir da tela
     setData(prev => prev.filter(produto => produto.id !== id));
+    setShowToast(true)
+    setTimeout(() => setShowToast(false), 2000)
   } catch (error) {
     console.error('Erro ao remover favorito:', error);
   }
@@ -85,6 +88,11 @@ const handleProduct = (item: Produto) => {
   return (
       <>
       <Info/>
+      {showToast && (
+            <View style={styles.toastConteiner}>
+              <Text style={styles.toastMessage}>Item Removido!</Text>
+            </View>
+            )}
       <View style={styles.conteinerTop}>
         <Text style={styles.favoriteTT}>Favoritos</Text>
         <View style={styles.conteinerItems}>
@@ -122,6 +130,23 @@ const handleProduct = (item: Produto) => {
 }
 
 const styles = StyleSheet.create({
+  toastConteiner:{
+    position: 'absolute',
+    display: 'flex',
+    alignSelf: 'center',
+    top: '50%',
+    // left: 20,
+    // right: 20,
+    backgroundColor: 'black',
+    padding: 10,
+    borderRadius: 10,
+    zIndex: 9999,
+    elevation: 9999,
+    alignItems: 'center',
+  },
+  toastMessage:{
+    color: '#fefefe'
+  },
    conteinerTop: {
     display: 'flex',
     flexDirection: 'row',
