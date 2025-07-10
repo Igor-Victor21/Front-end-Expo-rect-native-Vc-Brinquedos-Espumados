@@ -2,10 +2,11 @@ import { apiVcEspumados } from "@/api/apiVcEspumados";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { Header } from "../components/header";
 
 export default function Login() {
+    //as variaveis  user, setUser começa com null, para não entrar ja direto com uma conta de usuário
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [user, setUser] = useState(null);
@@ -13,48 +14,51 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [selectedTab, setSelectedTab] = useState("login");
 
-    // Variável usada para criar um novo usuário
-    const [newUserData, setNewUserData] = useState({
-        fullName: '', email: '', password: '', cpf: '', socialReason: '', stateRegistration: '', cnpj: '', cep: '', uf: '', city: '', neighborhood: '', road: '', numberHouse: 0, complement: '', numberPhone: '', dateOfBirth: ''
-    });
+    //campos visíveis na criação de conta
+    const [fullName, setFullName] = useState("");
+    const [registerEmail, setRegisterEmail] = useState("");
+    const [registerPassword, setRegisterPassword] = useState("");
 
-    // Labels para os campos do usuário
-    const labels = {
-        fullName: "Nome Completo",
-        email: "E-mail",
-        password: "Senha",
-        cpf: "CPF",
-        socialReason: "Razão Social",
-        stateRegistration: "Inscrição Estadual",
-        cnpj: "CNPJ",
-        cep: "CEP",
-        uf: "UF",
-        city: "Cidade",
-        neighborhood: "Bairro",
-        road: "Rua",
-        numberHouse: "Número",
-        complement: "Complemento",
-        numberPhone: "Telefone",
-        dateOfBirth: "Data de Nascimento"
-    };
-
-    // Função para criar usuário
+    //função para criar o usuário com os campos obrigatórios visíveis e o restante vazio
     const handleCreateUser = async () => {
         try {
-            const body = { ...newUserData, numberHouse: Number(newUserData.numberHouse) };
+            const body = {
+                fullName,
+                email: registerEmail,
+                password: registerPassword,
+                cpf: '',
+                socialReason: '',
+                stateRegistration: '',
+                cnpj: '',
+                cep: '',
+                uf: '',
+                city: '',
+                neighborhood: '',
+                road: '',
+                numberHouse: 0,
+                complement: '',
+                numberPhone: '',
+                dateOfBirth: ''
+            };
+
             await apiVcEspumados.post('/users', body);
             setMessage("Usuário criado com sucesso!");
             setTimeout(() => setMessage(""), 3000);
             setSelectedTab("login");
-            setNewUserData({
-                fullName: '', email: '', password: '', cpf: '', socialReason: '', stateRegistration: '', cnpj: '', cep: '', uf: '', city: '', neighborhood: '', road: '', numberHouse: 0, complement: '', numberPhone: '', dateOfBirth: ''
-            });
+
+            //limpa os campos após criar conta
+            setFullName("");
+            setRegisterEmail("");
+            setRegisterPassword("");
+
         } catch (err) {
+            console.error("Erro ao criar usuário:", err?.response?.data || err.message || err);
             setMessage('Erro ao criar o usuário');
             setTimeout(() => setMessage(""), 3000);
         }
     };
 
+    //função para logar
     const handleLogin = async () => {
         try {
             const response = await apiVcEspumados.get('/users');
@@ -70,6 +74,7 @@ export default function Login() {
             await AsyncStorage.setItem('user', JSON.stringify(foundUser));
             setUser(foundUser);
 
+            //verifica se é admin
             if (foundUser.email === 'igor.victorcontato@gmail.com') {
                 router.push('/userAdmin');
             } else {
@@ -82,6 +87,7 @@ export default function Login() {
         }
     };
 
+    //verifica se já tem usuário logado e redireciona
     useEffect(() => {
         const loadUser = async () => {
             const storedUser = await AsyncStorage.getItem('user');
@@ -97,14 +103,14 @@ export default function Login() {
             }
         };
         loadUser();
-    }, [])
+    }, []);
 
     return (
         <>
-        <View>
-            <Header image={require("../assets/image/gif-criancas-cubo.gif")} />
-        </View>
-            <View style={styles.body}>
+            <View style={{ backgroundColor: '#2A2A2A' }}>
+                <Header />
+            </View>
+            <View style={styles.btnLoginCadastrar}>
                 <View style={styles.containerButton}>
                     <TouchableOpacity
                         style={[styles.btnContainerLeft, selectedTab === 'login' ? styles.selectedTab : styles.unselectedTab]}
@@ -121,13 +127,18 @@ export default function Login() {
                 </View>
             </View>
             <View style={styles.wrapLogin}>
+                {/* Tela de login */}
                 {selectedTab === 'login' && (
                     <View style={styles.containerLogin}>
-                        <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder="Nome de usuário ou E-mail" keyboardType="email-address" placeholderTextColor="#ccc" />
-                        <View>
-                            <TextInput style={styles.input} value={password} onChangeText={setPassword} placeholder="Senha" keyboardType="default" secureTextEntry={!showPassword} placeholderTextColor="#ccc" />
-                            <TouchableOpacity onPress={() => setShowPassword(prev => !prev)} style={{ position: "absolute", right: 10, top: 15 }}>
-                                <Text style={{ color: "#fff" }}>👁️</Text>
+                        <View style={styles.inputWrapper}>
+                            <Image source={require('../assets/image/Person.png')} style={styles.icon} />
+                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} value={email} onChangeText={setEmail} placeholder="Nome de usuário ou E-mail" keyboardType="email-address" placeholderTextColor="#ccc" />
+                        </View>
+                        <View style={styles.inputWrapper}>
+                            <Image source={require('../assets/image/cadeado.png')} />
+                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} value={password} onChangeText={setPassword} placeholder="Senha" keyboardType="default" secureTextEntry={!showPassword} placeholderTextColor="#ccc" />
+                            <TouchableOpacity onPress={() => setShowPassword(prev => !prev)} style={styles.eyeButton}>
+                                <Image source={require("../assets/image/Eye.png")} style={{ width: 20, height: 20 }} />
                             </TouchableOpacity>
                         </View>
                         <View style={styles.wrapButton}>
@@ -138,31 +149,36 @@ export default function Login() {
                     </View>
                 )}
 
+                {/* Tela de cadastro */}
                 {selectedTab === 'register' && (
                     <ScrollView contentContainerStyle={styles.containerLogin}>
-                        {Object.entries(newUserData).map(([key, value]) => (
-                            <View key={key} style={{ marginBottom: 12 }}>
-                                <Text style={{ color: '#fff', marginBottom: 6, fontWeight: 'bold' }}>
-                                    {labels[key] || key}
-                                </Text>
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder={labels[key] || key}
-                                    placeholderTextColor="#ccc"
-                                    value={String(value)}
-                                    onChangeText={(text) => setNewUserData({ ...newUserData, [key]: key === 'numberHouse' ? Number(text) : text })}
-                                />
-                            </View>
-                        ))}
+                        <Text style={{ color: '#fff', marginLeft: 10, fontFamily: "bold", fontSize: 16 }}>Nome Completo</Text>
+                        <View style={styles.inputWrapper}>
+                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} placeholder="Nome Completo" placeholderTextColor="#ccc" value={fullName} onChangeText={setFullName} />
+                        </View>
+
+                        <Text style={{ color: '#fff', marginLeft: 10, fontFamily: "bold", fontSize: 16 }}>E-mail</Text>
+                        <View style={styles.inputWrapper}>
+                            <Image source={require('../assets/image/Person.png')} style={styles.icon} />
+                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} placeholder="E-mail" placeholderTextColor="#ccc" value={registerEmail} onChangeText={setRegisterEmail} keyboardType="email-address" />
+                        </View>
+
+                        <Text style={{ color: '#fff', marginLeft: 10, fontFamily: "bold", fontSize: 16 }}>Senha</Text>
+                        <View style={styles.inputWrapper}>
+                            <Image source={require('../assets/image/cadeado.png')} />
+                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} placeholder="Senha" placeholderTextColor="#ccc" value={registerPassword} onChangeText={setRegisterPassword} secureTextEntry />
+                        </View>
+
                         <TouchableOpacity style={styles.button} onPress={handleCreateUser}>
                             <Text style={styles.btnText}>CRIAR CONTA</Text>
                         </TouchableOpacity>
                     </ScrollView>
                 )}
 
+                {/* Mensagem de erro ou sucesso */}
                 {message && (
                     <View style={styles.errorMessageContainer}>
-                        <Text style={styles.errorMessageText}>{message}</Text>
+                        <Text style={styles.errorMessageText}>{message}</Text> {/* Corrigido aqui: envolvimento com <Text> */}
                     </View>
                 )}
             </View>
@@ -171,11 +187,11 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-    body: {
-        backgroundColor: '#2A2A2A',
+    btnLoginCadastrar: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderColor: '#2A2A2A',
+        backgroundColor: '#2A2A2A',
+        borderColor: '#2A2A2A'
     },
     containerButton: {
         flexDirection: 'row',
@@ -184,21 +200,19 @@ const styles = StyleSheet.create({
         borderRadius: 999,
         opacity: 0.8,
         width: 250,
-        marginTop: 20,
+        margin: 20,
     },
     btnContainerLeft: {
         flex: 1,
         paddingVertical: 10,
         alignItems: 'center',
-        borderTopLeftRadius: 999,
-        borderBottomLeftRadius: 999,
+        borderRadius: 999,
     },
     btnContainerRight: {
         flex: 1,
         paddingVertical: 10,
         alignItems: 'center',
-        borderTopRightRadius: 999,
-        borderBottomRightRadius: 999,
+        borderRadius: 999,
     },
     selectedTab: {
         backgroundColor: '#A7C7E7',
@@ -211,7 +225,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     wrapLogin: {
-        justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#2A2A2A',
         flex: 2,
@@ -219,26 +232,44 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     containerLogin: {
+        paddingTop: 30,
         width: 300,
         gap: 10,
         paddingBottom: 20
     },
-    input: {
-        paddingHorizontal: 10,
-        paddingVertical: 15,
+    inputWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
         borderWidth: 2,
         borderColor: '#ffffff',
-        color: "#ffffff",
         borderRadius: 999,
-        opacity: 0.8,
         marginBottom: 15,
+        paddingHorizontal: 15,
+        backgroundColor: 'transparent',
+        minHeight: 50,
+    },
+    icon: {
+        width: 22,
+        height: 22,
+        marginRight: 10,
+    },
+    inputWithIcon: {
+        flex: 1,
+        color: '#ffffff',
+        paddingVertical: 15,
+        paddingLeft: 10,
+        paddingRight: 10,
+    },
+    eyeButton: {
+        position: 'absolute',
+        right: 10,
     },
     wrapButton: {
         justifyContent: 'center',
         alignItems: 'center',
     },
     button: {
-        alignItems: 'center',
+        alignSelf: 'center',
         width: 150,
         backgroundColor: "#A7C7E7",
         paddingVertical: 15,
@@ -248,6 +279,7 @@ const styles = StyleSheet.create({
     btnText: {
         color: "#ffffff",
         opacity: 0.8,
+        alignSelf: 'center'
     },
     errorMessageContainer: {
         backgroundColor: 'red',
