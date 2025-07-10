@@ -1,7 +1,7 @@
 import * as Battery from 'expo-battery';
 import * as Network from 'expo-network';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 export default function ErrorScreen() {
   const [time, setTime] = useState('');
@@ -34,8 +34,18 @@ export default function ErrorScreen() {
       <View style={styles.statusBar}>
         <Text style={styles.time}>{time}</Text>
         <View style={styles.statusIcons}>
-          <Text>{isConnected ? '📶' : '❌'}</Text>
-          <Text>🔋{batteryLevel !== null ? `${Math.round(batteryLevel * 100)}%` : '...'}</Text>
+          <Image 
+            source={isConnected ? require('../assets/image/Wifi.png') : '❌'}
+            style={styles.img}
+          />
+          <View style={styles.batteryContainer}>
+            <Image source={require('../assets/image/Battery.png')} style={styles.img}/>
+            <Text>
+              {batteryLevel !== null ? `${Math.round(batteryLevel * 100)}%` : '...'}
+            </Text>
+          </View>
+          {/* <Text>{isConnected ? '📶' : '❌'}</Text>
+          <Text>🔋{batteryLevel !== null ? `${Math.round(batteryLevel * 100)}%` : '...'}</Text> */}
         </View>
       </View>
     </View>
@@ -60,4 +70,12 @@ const styles = StyleSheet.create({
     gap: 10,
     alignItems: 'center',
   },
+  img: {
+    height: 20,
+    width: 20
+  },
+  batteryContainer: {
+     flexDirection: 'row',
+    alignItems: 'center'
+  }
 })
