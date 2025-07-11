@@ -15,7 +15,7 @@ export default function CartScreen() {
       </View>
 
       <View style={styles.ItemsWrapCard}>
-        atumalaca
+        
       </View>
 
       <View style={styles.BuyPhase}>
@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
     paddingRight: 5
   },
   ItemsWrapCard: {
-    borderWidth: 2,
     width: '80%',
     height: 600,
     paddingVertical: 20,

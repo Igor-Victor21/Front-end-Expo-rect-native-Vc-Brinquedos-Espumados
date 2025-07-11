@@ -6,44 +6,44 @@ import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View 
 import Nav from '../components/nav-bar';
 
 export default function UserAdmin() {
-  // Variáveis utilizadas
+  //variáveis utilizadas
 
-  // Verificar admin
+  //verificar admin
   const [adminUser, setAdminUser] = useState(null);
-  // Variável que armazena a lista de usuários
+  //variável que armazena a lista de usuários
   const [users, setUsers] = useState([]);
-  // Variável para setar os usuários no crud
+  //variável para setar os usuários no crud
   const [selectedUser, setSelectedUser] = useState(null);
-  // Variável usada para modificar os dados dos usuários
+  //variável usada para modificar os dados dos usuários
   const [editData, setEditData] = useState({
     fullName: '', email: '', password: '', cpf: '', socialReason: '', stateRegistration: '', cnpj: '', cep: '', uf: '', city: '', neighborhood: '', road: '', numberHouse: 0, complement: '', numberPhone: '', dateOfBirth: ''
   });
-  // Variável para criar um novo usuário
+  //variável para criar um novo usuário
   const [newUserData, setNewUserData] = useState({
     fullName: '', email: '', password: '', cpf: '', socialReason: '', stateRegistration: '', cnpj: '', cep: '', uf: '', city: '', neighborhood: '', road: '', numberHouse: 0, complement: '', numberPhone: '', dateOfBirth: ''
   });
-  // Variável para exibir os usuários
+  //variável para exibir os usuários
   const [showUsers, setShowUsers] = useState(false);
-  // Variável para exibir as informações do usuário
+  //variável para exibir as informações do usuário
   const [showInfo, setShowInfo] = useState(false);
-  // Variável para exibir as informações de criar um usuário novo
+  //variável para exibir as informações de criar um usuário novo
   const [showCreateUser, setShowCreateUser] = useState(false);
-  // Variável que armazena os erros
+  //variável que armazena os erros
   const [error, setError] = useState('');
 
-  // Variável que armazena a lista de produtos
+  //variável que armazena a lista de produtos
   const [products, setProducts] = useState([]);
-  // Variável para setar o produto selecionado
+  //variável para setar o produto selecionado
   const [selectedProduct, setSelectedProduct] = useState(null);
-  // Variável usada para modificar os dados dos produtos
+  //variável usada para modificar os dados dos produtos
   const [editProduct, setEditProduct] = useState({
     name: '', description: '', measures: '', price: 0, image: ''
   });
-  // Variável usada para criar um novo produto
+  //variável usada para criar um novo produto
   const [newProduct, setNewProduct] = useState({
     name: '', description: '', measures: '', price: 0, image: ''
   });
-  // Variável que controla exibição do bloco de produtos
+  //variável que controla exibição do bloco de produtos
   const [showProducts, setShowProducts] = useState(false);
   const [showCreateProductForm, setShowCreateProductForm] = useState(false);
 
@@ -68,7 +68,7 @@ export default function UserAdmin() {
 
   // CRUD
 
-  // Método para buscar informações dos usuários
+  //método para buscar informações dos usuários
   const fetchUsers = async () => {
     try {
       const response = await apiVcEspumados.get('users');
@@ -78,13 +78,13 @@ export default function UserAdmin() {
     }
   };
 
-  // Função que seleciona o usuário para edição
+  //função que seleciona o usuário para edição
   const handleUserEdit = (user) => {
     setSelectedUser(user);
     setEditData({ ...user });
   };
 
-  // Função para editar as informações do usuário
+  //função para editar as informações do usuário
   const handleUpdate = async () => {
     try {
       if (!selectedUser?.id) return;
@@ -108,13 +108,13 @@ export default function UserAdmin() {
     }
   };
 
-  // Função para sair
+  //função para sair
   const handleLogout = async () => {
     await AsyncStorage.removeItem('user');
     router.push('/login');
   };
 
-  // Funções para alternar entre as seções (fechando as outras quando uma é aberta)
+  //funções para alternar entre as seções (fechando as outras quando uma é aberta)
   const toggleShowInfo = () => {
     setShowInfo(!showInfo);
     setShowUsers(false);
@@ -122,7 +122,7 @@ export default function UserAdmin() {
     setShowProducts(false);
     setShowCreateProductForm(false);
   };
-
+  //fução de quando aperta para ver os usuários os outros botões iram fechar 
   const toggleShowUsers = () => {
     setShowUsers(!showUsers);
     setShowInfo(false);
@@ -134,6 +134,7 @@ export default function UserAdmin() {
     }
   };
 
+  //função de quando aperta no botão de criar usuário fecha todos os outros botões
   const toggleCreateUserForm = () => {
     setShowCreateUser(!showCreateUser);
     setShowInfo(false);
@@ -142,7 +143,7 @@ export default function UserAdmin() {
     setShowCreateProductForm(false);
   };
 
-  // Função de criar usuário
+  //função de criar usuário
   const handleCreateUser = async () => {
     try {
       const body = { ...newUserData, numberHouse: Number(newUserData.numberHouse) };
@@ -157,7 +158,7 @@ export default function UserAdmin() {
     }
   };
 
-  // Labels para os campos do usuário
+  //labels para os campos do usuário
   const labels = {
     fullName: "Nome Completo",
     email: "E-mail",
@@ -177,7 +178,7 @@ export default function UserAdmin() {
     dateOfBirth: "Data de Nascimento"
   };
 
-  // [PRODUTOS] buscar todos os produtos
+  // buscar todos os produtos
   const fetchProducts = async () => {
     try {
       const response = await apiVcEspumados.get('products');
@@ -187,13 +188,13 @@ export default function UserAdmin() {
     }
   };
 
-  // [PRODUTOS] selecionar um produto para edição
+  // selecionar um produto para edição
   const handleProductEdit = (product) => {
     setSelectedProduct(product);
     setEditProduct({ ...product });
   };
 
-  // [PRODUTOS] editar as informações de um produto
+  // editar as informações de um produto
   const handleUpdateProduct = async () => {
     try {
       if (!selectedProduct?.id) return;
@@ -205,7 +206,7 @@ export default function UserAdmin() {
     }
   };
 
-  // [PRODUTOS] deletar um produto
+  // deletar um produto
   const handleDeleteProduct = async (id) => {
     try {
       await apiVcEspumados.delete(`/products/${id}`);
@@ -216,7 +217,7 @@ export default function UserAdmin() {
     }
   };
 
-  // [PRODUTOS] criar um novo produto
+  // criar um novo produto
   const handleCreateProduct = async () => {
     try {
       const body = { ...newProduct, price: Number(newProduct.price) };
@@ -229,7 +230,7 @@ export default function UserAdmin() {
     }
   };
 
-  // [PRODUTOS] alternar exibição dos produtos
+  // alternar exibição dos produtos
   const toggleShowProducts = () => {
     setShowProducts(!showProducts);
     setShowInfo(false);
@@ -241,6 +242,7 @@ export default function UserAdmin() {
     }
   };
 
+  //botão de exibir informações de quando aperta no botão do create fecha todos os botões que estão abertos
   const toggleShowCreateProductForm = () => {
     setShowCreateProductForm(!showCreateProductForm);
     setShowInfo(false);
@@ -252,7 +254,7 @@ export default function UserAdmin() {
     }
   };
 
-  // [PRODUTOS] labels para os campos de produto
+  //labels para os campos de produto
   const productLabels = {
     name: "Nome do Produto",
     description: "Descrição",
@@ -263,239 +265,241 @@ export default function UserAdmin() {
 
   return (
     <>
-      {/* Botão para ver a informação do usuário */}
-      <TouchableOpacity style={styles.button} onPress={toggleShowInfo}>
-        <Text style={styles.buttonTxt}>{showInfo ? 'Fechar Informações' : 'Exibir Informações'}</Text>
-      </TouchableOpacity>
+      <View style={styles.body}>
+        {/* Botão para ver a informação do usuário */}
+        <TouchableOpacity style={styles.button} onPress={toggleShowInfo}>
+          <Text style={styles.buttonTxt}>{showInfo ? 'Fechar Informações' : 'Exibir Informações'}</Text>
+        </TouchableOpacity>
 
-      {/* Informações do Admin */}
-      {showInfo && adminUser && (
-        <View style={styles.wrapPage}>
-          <Text style={styles.titleName}>Informações do Admin</Text>
-          <View style={styles.itemList}>
-            {Object.entries(adminUser).map(([key, value]) => {
-              if (key === 'id') {
-                return null;
-              } else {
-                return (
-                  <Text key={key}>
-                    <Text style={{ fontWeight: 'bold' }}>
-                      {labels[key] || key}:
-                    </Text> {value}
-                  </Text>
-                );
-              }
-            })}
-          </View>
-        </View>
-      )}
-
-      {/* Botão para exibir a lista de usuários */}
-      <TouchableOpacity style={styles.button} onPress={toggleShowUsers}>
-        <Text style={styles.buttonTxt}>{showUsers ? 'Ocultar Lista de Usuários' : 'Exibir Todos os Usuários'}</Text>
-      </TouchableOpacity>
-
-      {/* Lista de usuários */}
-      {showUsers && (
-        <ScrollView contentContainerStyle={{ padding: 20 }}>
-          {selectedUser ? (
+        {/* Informações do Admin */}
+        {showInfo && adminUser && (
+          <View style={styles.wrapPage}>
+            <Text style={styles.titleName}>Informações do Admin</Text>
             <View style={styles.itemList}>
-              <Text style={styles.titleName}>Editar Usuário</Text>
-              {Object.entries(editData).map(([key, value]) => (
+              {Object.entries(adminUser).map(([key, value]) => {
+                if (key === 'id') {
+                  return null;
+                } else {
+                  return (
+                    <Text key={key} style={{ color: '#ffffff' }}>
+                      <Text style={{ fontWeight: 'bold', color: '#ffffff' }}>
+                        {labels[key] || key}:
+                      </Text> {value}
+                    </Text>
+                  );
+                }
+              })}
+            </View>
+          </View>
+        )}
+
+        {/* botão para exibir a lista de usuários */}
+        <TouchableOpacity style={styles.button} onPress={toggleShowUsers}>
+          <Text style={styles.buttonTxt}>{showUsers ? 'Ocultar Lista de Usuários' : 'Exibir Todos os Usuários'}</Text>
+        </TouchableOpacity>
+
+        {/* lista de usuários */}
+        {showUsers && (
+          <ScrollView contentContainerStyle={{ padding: 20 }}>
+            {selectedUser ? (
+              <View style={styles.itemList}>
+                <Text style={styles.titleName}>Editar Usuário</Text>
+                {Object.entries(editData).map(([key, value]) => (
+                  key !== "id" && (
+                    <View key={key} style={{ marginBottom: 8, }}>
+                      <Text style={{ fontWeight: 'bold', color: '#ffffff' }}>{labels[key] || key}</Text>
+                      <TextInput style={styles.input} placeholder={labels[key] || key} value={String(value)} onChangeText={(text) => setEditData({ ...editData, [key]: key === "numberHouse" ? Number(text) : text })} />
+                    </View>
+                  )
+                ))}
+                <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10, marginTop: 10 }}>
+                  <TouchableOpacity style={styles.button} onPress={handleUpdate}><Text style={styles.buttonTxt}>Salvar</Text></TouchableOpacity>
+                  <TouchableOpacity style={styles.buttonLogout} onPress={() => setSelectedUser(null)}><Text style={styles.logoutText}>Cancelar</Text></TouchableOpacity>
+                </View>
+              </View>
+            ) : users.map((u) => (
+              <View key={u.id} style={styles.itemList}>
+                <Text style={{ fontWeight: 'bold', color: '#ffffff' }}>Usuário: {u.fullName}</Text>
+                <Text style={{ fontWeight: 'bold', color: '#ffffff' }}>Email: {u.email}</Text>
+                <Text style={{ fontWeight: 'bold', color: '#ffffff' }}>CPF: {u.cpf}</Text>
+                <Text style={{ fontWeight: 'bold', color: '#ffffff' }}>Cidade: {u.city}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10, marginTop: 10 }}>
+                  <TouchableOpacity style={styles.button} onPress={() => handleUserEdit(u)}><Text style={styles.buttonTxt}>Editar</Text></TouchableOpacity>
+                  <TouchableOpacity style={styles.buttonLogout} onPress={() => handleDelete(u.id)}><Text style={styles.logoutText}>Deletar</Text></TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </ScrollView>
+        )}
+
+        {/* botão de criar novo usuário */}
+        <TouchableOpacity style={styles.button} onPress={toggleCreateUserForm}>
+          <Text style={styles.buttonTxt}>{showCreateUser ? 'Fechar Formulário' : 'Criar Novo Usuário'}</Text>
+        </TouchableOpacity>
+
+        {/* formulário de criação de usuário */}
+        {showCreateUser && (
+          <ScrollView contentContainerStyle={{ padding: 20, flexGrow: 1 }}>
+            <View style={styles.itemList}>
+              <Text style={styles.titleName}>Criar Novo Usuário</Text>
+              {Object.entries(newUserData).map(([key, value]) => (
                 key !== "id" && (
                   <View key={key} style={{ marginBottom: 8 }}>
-                    <Text style={{ fontWeight: 'bold' }}>{labels[key] || key}</Text>
-                    <TextInput style={styles.input} placeholder={labels[key] || key} value={String(value)} onChangeText={(text) => setEditData({ ...editData, [key]: key === "numberHouse" ? Number(text) : text })} />
+                    <Text style={{ fontWeight: 'bold', color: '#ffffff' }}>{labels[key] || key}</Text>
+                    <TextInput style={styles.input} placeholder={labels[key] || key} value={String(value)} onChangeText={(text) => setNewUserData({ ...newUserData, [key]: key === "numberHouse" ? Number(text) : text })} />
                   </View>
                 )
               ))}
               <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10, marginTop: 10 }}>
-                <TouchableOpacity style={styles.button} onPress={handleUpdate}><Text style={styles.buttonTxt}>Salvar</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.buttonLogout} onPress={() => setSelectedUser(null)}><Text style={styles.logoutText}>Cancelar</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={handleCreateUser}><Text style={styles.buttonTxt}>Criar Usuário</Text></TouchableOpacity>
+                <TouchableOpacity style={styles.buttonLogout} onPress={toggleCreateUserForm}><Text style={styles.logoutText}>Cancelar</Text></TouchableOpacity>
               </View>
             </View>
-          ) : users.map((u) => (
-            <View key={u.id} style={styles.itemList}>
-              <Text style={{ fontWeight: 'bold' }}>Usuário: {u.fullName}</Text>
-              <Text>Email: {u.email}</Text>
-              <Text>CPF: {u.cpf}</Text>
-              <Text>Cidade: {u.city}</Text>
-              <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10, marginTop: 10 }}>
-                <TouchableOpacity style={styles.button} onPress={() => handleUserEdit(u)}><Text style={styles.buttonTxt}>Editar</Text></TouchableOpacity>
-                <TouchableOpacity style={styles.buttonLogout} onPress={() => handleDelete(u.id)}><Text style={styles.logoutText}>Deletar</Text></TouchableOpacity>
-              </View>
-            </View>
-          ))}
-        </ScrollView>
-      )}
+          </ScrollView>
+        )}
 
-      {/* Botão de criar novo usuário */}
-      <TouchableOpacity style={styles.button} onPress={toggleCreateUserForm}>
-        <Text style={styles.buttonTxt}>{showCreateUser ? 'Fechar Formulário' : 'Criar Novo Usuário'}</Text>
-      </TouchableOpacity>
+        {/* botão para exibir os produtos */}
+        <TouchableOpacity style={styles.button} onPress={toggleShowProducts}>
+          <Text style={styles.buttonTxt}>
+            {showProducts ? 'Fechar Produtos' : 'Exibir Produtos'}
+          </Text>
+        </TouchableOpacity>
 
-      {/* Formulário de criação de usuário */}
-      {showCreateUser && (
-        <ScrollView contentContainerStyle={{ padding: 20, flexGrow: 1 }}>
-          <View style={styles.itemList}>
-            <Text style={styles.titleName}>Criar Novo Usuário</Text>
-            {Object.entries(newUserData).map(([key, value]) => (
-              key !== "id" && (
-                <View key={key} style={{ marginBottom: 8 }}>
-                  <Text style={{ fontWeight: 'bold' }}>{labels[key] || key}</Text>
-                  <TextInput style={styles.input} placeholder={labels[key] || key} value={String(value)} onChangeText={(text) => setNewUserData({ ...newUserData, [key]: key === "numberHouse" ? Number(text) : text })} />
-                </View>
-              )
-            ))}
-            <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10, marginTop: 10 }}>
-              <TouchableOpacity style={styles.button} onPress={handleCreateUser}><Text style={styles.buttonTxt}>Criar Usuário</Text></TouchableOpacity>
-              <TouchableOpacity style={styles.buttonLogout} onPress={toggleCreateUserForm}><Text style={styles.logoutText}>Cancelar</Text></TouchableOpacity>
-            </View>
-          </View>
-        </ScrollView>
-      )}
+        {/* botão para exibir formulário de criação */}
+        <TouchableOpacity style={styles.button} onPress={toggleShowCreateProductForm}>
+          <Text style={styles.buttonTxt}>
+            {showCreateProductForm ? 'Fechar Criar Produto' : 'Criar Produto'}
+          </Text>
+        </TouchableOpacity>
 
-      {/* [PRODUTOS] botão para exibir os produtos */}
-      <TouchableOpacity style={styles.button} onPress={toggleShowProducts}>
-        <Text style={styles.buttonTxt}>
-          {showProducts ? 'Fechar Produtos' : 'Exibir Produtos'}
-        </Text>
-      </TouchableOpacity>
-
-      {/* [PRODUTOS] botão para exibir formulário de criação */}
-      <TouchableOpacity style={styles.button} onPress={toggleShowCreateProductForm}>
-        <Text style={styles.buttonTxt}>
-          {showCreateProductForm ? 'Fechar Criar Produto' : 'Criar Produto'}
-        </Text>
-      </TouchableOpacity>
-
-      {/* [PRODUTOS] interface para criar novo produto */}
-      {showCreateProductForm && (
-        <ScrollView contentContainerStyle={{ padding: 20 }}>
-          <Text style={styles.titleName}>Criar Produto</Text>
-          {Object.entries(newProduct).map(([key, value]) => (
-            <View key={key} style={{ marginBottom: 8 }}>
-              <Text style={{ fontWeight: 'bold' }}>{productLabels[key] || key}</Text>
-              <TextInput
-                style={styles.input}
-                placeholder={productLabels[key] || key}
-                value={String(value)}
-                onChangeText={(text) =>
-                  setNewProduct({
-                    ...newProduct,
-                    [key]: key === 'price' ? Number(text) : text,
-                  })
-                }
-              />
-            </View>
-          ))}
-          <TouchableOpacity style={styles.button} onPress={handleCreateProduct}>
-            <Text style={styles.buttonTxt}>Criar Produto</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.buttonLogout} onPress={() => setShowCreateProductForm(false)}>
-            <Text style={styles.logoutText}>Cancelar</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      )}
-
-      {/* [PRODUTOS] interface para exibir/editar produtos */}
-      {showProducts && (
-        <ScrollView contentContainerStyle={{ padding: 20 }}>
-          {/* Editar produto */}
-          {selectedProduct && (
-            <View style={styles.itemList}>
-              <Text style={styles.titleName}>Editar Produto</Text>
-
-              {editProduct.image ? (
-                <Image
-                  source={{ uri: editProduct.image }}
-                  style={{ width: 200, height: 200, alignSelf: 'center', marginBottom: 10 }}
+        {/* interface para criar novo produto */}
+        {showCreateProductForm && (
+          <ScrollView contentContainerStyle={{ padding: 20 }}>
+            <Text style={styles.titleName}>Criar Produto</Text>
+            {Object.entries(newProduct).map(([key, value]) => (
+              <View key={key} style={{ marginBottom: 8 }}>
+                <Text style={{ fontWeight: 'bold', color: '#ffffff' }}>{productLabels[key] || key}</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder={productLabels[key] || key}
+                  value={String(value)}
+                  onChangeText={(text) =>
+                    setNewProduct({
+                      ...newProduct,
+                      [key]: key === 'price' ? Number(text) : text,
+                    })
+                  }
                 />
-              ) : null}
-
-              {Object.entries(editProduct).map(([key, value]) => (
-                key !== 'id' && (
-                  <View key={key} style={{ marginBottom: 8 }}>
-                    <Text style={{ fontWeight: 'bold' }}>{productLabels[key] || key}</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder={productLabels[key] || key}
-                      value={String(value)}
-                      onChangeText={(text) =>
-                        setEditProduct({
-                          ...editProduct,
-                          [key]: key === 'price' ? Number(text) : text,
-                        })
-                      }
-                    />
-                  </View>
-                )
-              ))}
-              <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10, marginTop: 10 }}>
-                <TouchableOpacity style={styles.button} onPress={handleUpdateProduct}>
-                  <Text style={styles.buttonTxt}>Salvar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonLogout} onPress={() => setSelectedProduct(null)}>
-                  <Text style={styles.logoutText}>Cancelar</Text>
-                </TouchableOpacity>
               </View>
-            </View>
-          )}
+            ))}
+            <TouchableOpacity style={styles.button} onPress={handleCreateProduct}>
+              <Text style={styles.buttonTxt}>Criar Produto</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.buttonLogout} onPress={() => setShowCreateProductForm(false)}>
+              <Text style={styles.logoutText}>Cancelar</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        )}
 
-          {/* Lista de produtos */}
-          {!selectedProduct &&
-            products.map((p) => (
-              <View key={p.id} style={styles.itemList}>
-                <Text style={{ fontWeight: 'bold' }}>Produto: {p.name}</Text>
-                <Text>Descrição: {p.description}</Text>
-                <Text>Preço: R$ {p.price}</Text>
-                <Text>Medidas: {p.measures}</Text>
-                {p.image && (
+        {/* interface para exibir/editar produtos */}
+        {showProducts && (
+          <ScrollView contentContainerStyle={{ padding: 20 }}>
+            {/* Editar produto */}
+            {selectedProduct && (
+              <View style={styles.itemList}>
+                <Text style={styles.titleName}>Editar Produto</Text>
+
+                {editProduct.image ? (
                   <Image
-                    source={{ uri: p.image }}
-                    style={{ width: 100, height: 100, alignSelf: 'center', marginTop: 10 }}
+                    source={{ uri: editProduct.image }}
+                    style={{ width: 200, height: 200, alignSelf: 'center', marginBottom: 10 }}
                   />
-                )}
+                ) : null}
+
+                {Object.entries(editProduct).map(([key, value]) => (
+                  key !== 'id' && (
+                    <View key={key} style={{ marginBottom: 8 }}>
+                      <Text style={{ fontWeight: 'bold', color: '#ffffff' }}>{productLabels[key] || key}</Text>
+                      <TextInput style={styles.input} placeholder={productLabels[key] || key} value={String(value)} onChangeText={(text) => setEditProduct({ ...editProduct, [key]: key === 'price' ? Number(text) : text, })} />
+                    </View>
+                  )
+                ))}
                 <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10, marginTop: 10 }}>
-                  <TouchableOpacity style={styles.button} onPress={() => handleProductEdit(p)}>
-                    <Text style={styles.buttonTxt}>Editar</Text>
+                  <TouchableOpacity style={styles.button} onPress={handleUpdateProduct}>
+                    <Text style={styles.buttonTxt}>Salvar</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.buttonLogout} onPress={() => handleDeleteProduct(p.id)}>
-                    <Text style={styles.logoutText}>Deletar</Text>
+                  <TouchableOpacity style={styles.buttonLogout} onPress={() => setSelectedProduct(null)}>
+                    <Text style={styles.logoutText}>Cancelar</Text>
                   </TouchableOpacity>
                 </View>
               </View>
-            ))}
-        </ScrollView>
-      )}
+            )}
 
-      {/* Botão de sair */}
-      <TouchableOpacity style={styles.buttonLogout} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Sair</Text>
-      </TouchableOpacity>
+            {/* Lista de produtos */}
+            {!selectedProduct &&
+              products.map((p) => (
+                <View key={p.id} style={styles.itemList}>
+                  <Text style={{ fontWeight: 'bold', color: '#ffffff' }}>Produto: {p.name}</Text>
+                  <Text style={{ fontWeight: 'bold', color: '#ffffff' }}>Descrição: {p.description}</Text>
+                  <Text style={{ fontWeight: 'bold', color: '#ffffff' }}>Preço: R$ {p.price}</Text>
+                  <Text style={{ fontWeight: 'bold', color: '#ffffff' }}>Medidas: {p.measures}</Text>
+                  {p.image && (
+                    <Image
+                      source={{ uri: p.image }}
+                      style={{ width: 100, height: 100, alignSelf: 'center', marginTop: 10 }}
+                    />
+                  )}
+                  <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10, marginTop: 10 }}>
+                    <TouchableOpacity style={styles.button} onPress={() => handleProductEdit(p)}>
+                      <Text style={styles.buttonTxt}>Editar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonLogout} onPress={() => handleDeleteProduct(p.id)}>
+                      <Text style={styles.logoutText}>Deletar</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ))}
+          </ScrollView>
+        )}
 
-      <Nav image={0} onPress={() => { }} />
+        {/* Botão de sair */}
+        <TouchableOpacity style={styles.buttonLogout} onPress={handleLogout}>
+          <Text style={styles.logoutText}>Sair</Text>
+        </TouchableOpacity>
+
+        <Nav image={0} onPress={() => { }} />
+      </View>
     </>
   );
 }
 
 // Estilos
 const styles = StyleSheet.create({
+  body: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#2A2A2A',
+    paddingTop: 20,
+  },
   wrapPage: {
     display: 'flex',
     flex: 1,
     alignItems: 'center',
     justifyContent: 'flex-start',
     marginTop: 20,
+
   },
   titleName: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    alignSelf: 'center'
+    alignSelf: 'center',
+    color: '#ffffff',
   },
   itemList: {
-    backgroundColor: '#A7C7E7',
+    backgroundColor: 'none',
+    borderWidth: 1,
+    borderColor: '#ffffff',
     borderRadius: 10,
     padding: 15,
     marginBottom: 20,
@@ -514,18 +518,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   button: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
+    backgroundColor: 'none',
+    borderWidth: 1,
+    borderColor: '#ffffff',
+    padding: 15,
+    borderRadius: 999,
     alignSelf: 'center',
     marginVertical: 10,
   },
   buttonLogout: {
-    backgroundColor: '#FF3B30',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
+    width: 100,
+    alignItems: 'center',
+    backgroundColor: 'red',
+    borderWidth: 2,
+    borderColor: 'red',
+    padding: 10,
+    borderRadius: 999,
     alignSelf: 'center',
     marginVertical: 10,
   },

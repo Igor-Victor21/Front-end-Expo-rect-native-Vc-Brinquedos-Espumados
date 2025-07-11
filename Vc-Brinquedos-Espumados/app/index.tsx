@@ -93,7 +93,7 @@ const showCustomToast = (jaExiste: boolean) => {
         <TouchableOpacity style={styles.UserImagePosition}>
           <Image style={styles.UserImage} source={require('../assets/image/user-test-sem-figma.png')}/>
         </TouchableOpacity>
-        <Text style={styles.MessageIntro}>Bom dia Michely!</Text>
+        <Text style={styles.MessageIntro}>Bom dia!</Text>
         <Text style={styles.Slogan}>Tenha momentos divertidos e únicos com seus filhos com a VC brinquedos Espumados</Text>
         <TextInput style={styles.SearchBar} placeholder='Procurar'/>
       </View>
