@@ -32,11 +32,7 @@ export const CardFav = ({ name, image, description, price, id, onUnfavorite } : 
 };
   
   return (
-        <LinearGradient
-      colors={['rgba(231, 167, 199, 1)', 'rgba(167, 167, 231, 1)']}
-      start={{ x: 0.5, y: 0 }}
-      end={{ x: 0.5, y: 1 }}
-      style={styles.container} // Gradiente aplicado no container inteiro
+        <View style={styles.container} // Gradiente aplicado no container inteiro
     >
       <View style={styles.containerImg}>
         <Image 
@@ -48,10 +44,7 @@ export const CardFav = ({ name, image, description, price, id, onUnfavorite } : 
 
       <View style={styles.containerTxt}>
         <Text style={styles.titleName}>{name}</Text>
-        <Text style={styles.titleDesc}>{description}</Text>
-
         <View>
-          <Text style={styles.titlePrice}>Preço</Text>
           <Text style={styles.showPrice}>R$ {price.toFixed(2)}</Text>
         </View>
 
@@ -59,7 +52,7 @@ export const CardFav = ({ name, image, description, price, id, onUnfavorite } : 
           <Image style={styles.favIcon} source={require('../assets/image/favorite-test-sem-figma.png')} />
         </TouchableOpacity>
       </View>
-    </LinearGradient>
+    </View>
            
             
         )
@@ -67,12 +60,12 @@ export const CardFav = ({ name, image, description, price, id, onUnfavorite } : 
 
 const styles = StyleSheet.create({
     container:{
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'flex-start',
     borderWidth: 0,
-    borderRadius: 30,
-    width: 350,
-    height: 150,
+    borderRadius: 0,
+    width: 170,
+    height: 230,
     marginBottom: 20,
     overflow: 'hidden',
     // iOS shadow
@@ -90,45 +83,49 @@ const styles = StyleSheet.create({
     containerTxt: {
     display: 'flex',
     alignItems: 'flex-start',
-    alignSelf: 'center',
+    alignSelf: 'baseline',
     width: 100,
     height: 'auto',
-    marginLeft: 20,
-    marginTop: '3%',
+    top: 30,
+    marginLeft: 10,
+    // marginTop: '3%',
     },
     titleName:{
     textAlign: 'left',
-    fontWeight: '500',
-    fontSize: 21,
+    fontWeight: '200',
+    fontSize: 16,
     width: 130,
+    color: "#010F07",
     },
-    titleDesc:{
-    fontWeight: '300',
-    fontSize: 18,
-    width: 150
+    // titleDesc:{
+    // fontWeight: '300',
+    // fontSize: 18,
+    // width: 150
     
-    },
-    titlePrice:{
-    fontWeight: '300',
-    fontSize: 12,
-    },
+    // },
+    // titlePrice:{
+    // fontWeight: '300',
+    // fontSize: 12,
+    // },
     showPrice:{
-    fontWeight: '700',
-    fontSize: 21,
-    width: 200
+    fontWeight: '400',
+    fontSize: 9,
+    width: 200,
+    top: 5,
+    color: '#010F07'
     },
     containerImg:{
     borderWidth: 0,
     borderRadius: 25,
     width: 130,
     height: 'auto',
-    marginLeft: 15,
+    marginLeft: 20,
     marginVertical: "3%",
-
+    top: 25
     },
     imgstyle: {
     width: 130, 
-    height: 130, 
+    height: 120, 
     borderRadius: 10,
     backgroundColor: '#D9D9D94D' 
     },
@@ -139,7 +136,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 20,
     height: 20,
-    left: '140%',
+    left: '130%',
     top: "5%",
     
     },

@@ -105,9 +105,12 @@ const handleProduct = (item: Produto) => {
         <SafeAreaView style={styles.wrapCards}>
           
                 <FlatList
+                style={styles.cardFlatlist}
                 data={data}
+                numColumns={2}
+                columnWrapperStyle={styles.cardRow}
                 renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => handleProduct(item)}>
+                  <TouchableOpacity style={styles.cardBtn} onPress={() => handleProduct(item)}>
                     <CardFav
                     name={item.name}
                     description={item.description}
@@ -186,11 +189,28 @@ const styles = StyleSheet.create({
    },
    conteinerCards:{
     display: 'flex',
-    alignSelf: 'center',
+    alignSelf: 'auto',
     marginTop: 20,
+    left: 20,
    },
    wrapCards: {
     display: 'flex',
     alignContent: 'center',
+    
+   },
+
+   cardFlatlist:{
+    flexGrow: 1
+   },
+   cardRow:{
+    right: 10,
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+
+   },
+   cardBtn:{
+    display: 'flex',
+    width: 180,
+    height: 230
    }
 });
