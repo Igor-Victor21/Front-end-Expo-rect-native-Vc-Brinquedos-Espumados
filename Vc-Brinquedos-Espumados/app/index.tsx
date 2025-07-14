@@ -100,12 +100,11 @@ const showCustomToast = (jaExiste: boolean) => {
       <Text style={styles.Text}>Nova Coleção</Text>
 
       <View style={styles.Bar}>
-        <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+        {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}> */}
           <TouchableOpacity style={styles.Baritem}>Todos</TouchableOpacity>
-          <TouchableOpacity style={styles.Baritem}>Brinquedos</TouchableOpacity>
           <TouchableOpacity style={styles.Baritem}>Kits</TouchableOpacity>
           <TouchableOpacity style={styles.Baritem}>Promoções</TouchableOpacity>
-        </ScrollView>
+        {/* </ScrollView> */}
       </View>
 
       <View>
@@ -203,13 +202,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   Baritem: {
-    backgroundColor: 'black',
+    backgroundColor: '#7DACFF',
     color: 'white',
     borderRadius: 999,
     margin: 15,
     textAlign: 'center',
     width: '25%',
-    padding: 5
+    padding: 10,
   },
   conteinerCards:{
     display: 'flex',
