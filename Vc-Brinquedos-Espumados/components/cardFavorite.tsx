@@ -32,8 +32,7 @@ export const CardFav = ({ name, image, description, price, id, onUnfavorite } : 
 };
   
   return (
-        <View style={styles.container} // Gradiente aplicado no container inteiro
-    >
+        <View style={styles.container}>
       <View style={styles.containerImg}>
         <Image 
           style={styles.imgstyle}

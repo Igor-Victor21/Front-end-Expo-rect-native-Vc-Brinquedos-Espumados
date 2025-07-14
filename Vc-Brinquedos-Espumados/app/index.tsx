@@ -25,6 +25,7 @@ export default function HomeScreen() {
   const [data, setData] = useState<Produto[]>([]);
   const [showToast, setShowToast] = useState(false)
   const [messageToast, setMessageToast] = useState('')
+  const [barContent, setBarContent] = useState(1)
   
   
 
@@ -56,6 +57,8 @@ export default function HomeScreen() {
 
     checkModalStatus();
     fetchData();
+    // const separateData = async () => {}
+    //   separateData();
   }, []);
 
   // Função do touchable(cards dos produtos) para levar o usuario para pagina do produto.
@@ -67,6 +70,17 @@ export default function HomeScreen() {
       params: { id: item.id.toString() },
     });
   };
+
+
+const produtosFiltrados = data.filter((e) => {
+  if (barContent === 1) {
+    return e.description.trim() === "";
+  } else if (barContent === 2) {
+    return e.description.includes("|");
+  } else {
+    return e.description.trim() !== "" && !e.description.includes("|");
+  }
+});
 
   //Função para mostrar Toast ao clicar to Touchable do card.tsx de favorite
 const showCustomToast = (jaExiste: boolean) => {
@@ -101,9 +115,9 @@ const showCustomToast = (jaExiste: boolean) => {
 
       <View style={styles.Bar}>
         {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}> */}
-          <TouchableOpacity style={styles.Baritem}>Todos</TouchableOpacity>
-          <TouchableOpacity style={styles.Baritem}>Kits</TouchableOpacity>
-          <TouchableOpacity style={styles.Baritem}>Promoções</TouchableOpacity>
+          <TouchableOpacity style={styles.Baritem} onPress={() => {setBarContent(1)}}><Text style={styles.textBtn}>Todos</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.Baritem} onPress={() => {setBarContent(2)}}><Text style={styles.textBtn}>Kits</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.Baritem} onPress={() => {setBarContent(3)}}><Text style={styles.textBtn}>Promoções</Text></TouchableOpacity>
         {/* </ScrollView> */}
       </View>
 
@@ -111,12 +125,13 @@ const showCustomToast = (jaExiste: boolean) => {
                 <ScrollView style={styles.conteinerCards} alwaysBounceHorizontal={true} horizontal={true}>
                 <SafeAreaView style={styles.wrapCards}>
                         <FlatList
-                        data={data}
+                        data={produtosFiltrados}
                         horizontal={true}
                         style={styles.flatCards}
                         renderItem={({ item }) => (
                           <TouchableOpacity onPress={() => handleProduct(item)}  style={{ marginRight: 16 }}>
                             <Card
+                            key={item.id}
                             name={item.name}
                             description={item.description}
                             image={item.image}
@@ -203,12 +218,16 @@ const styles = StyleSheet.create({
   },
   Baritem: {
     backgroundColor: '#7DACFF',
-    color: 'white',
     borderRadius: 999,
     margin: 15,
-    textAlign: 'center',
     width: '25%',
     padding: 10,
+    marginBottom: 5
+  },
+  textBtn:{
+    color: 'white',
+    alignSelf: 'center',
+    
   },
   conteinerCards:{
     display: 'flex',
