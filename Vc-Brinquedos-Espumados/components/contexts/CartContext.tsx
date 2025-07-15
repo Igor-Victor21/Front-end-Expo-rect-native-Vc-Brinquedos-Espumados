@@ -1,42 +1,69 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 
-type Product = {
+type CartItem = {
   id: string;
   name: string;
   price: number;
-  image?: string;
+  image: string;
+  quantity: number; // ✅ novo campo
 };
 
 type CartContextType = {
-  cartItems: Product[];
-  addToCart: (product: Product) => void;
-  removeFromCart: (id: string) => void;
+  cartItems: CartItem[];
+  addToCart: (item: Omit<CartItem, 'quantity'>) => void;
+  incrementQuantity: (id: string) => void;
+  decrementQuantity: (id: string) => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [cartItems, setCartItems] = useState<Product[]>([]);
+export function CartProvider({ children }: { children: ReactNode }) {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  const addToCart = (product: Product) => {
-    setCartItems((prev) => [...prev, product]);
+  const addToCart = (item: Omit<CartItem, 'quantity'>) => {
+    setCartItems(prevItems => {
+      const existingItem = prevItems.find(p => p.id === item.id);
+      if (existingItem) {
+        return prevItems.map(p =>
+          p.id === item.id ? { ...p, quantity: p.quantity + 1 } : p
+        );
+      } else {
+        return [...prevItems, { ...item, quantity: 1 }];
+      }
+    });
   };
 
-  const removeFromCart = (id: string) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  const incrementQuantity = (id: string) => {
+    setCartItems(prevItems =>
+      prevItems.map(p =>
+        p.id === id ? { ...p, quantity: p.quantity + 1 } : p
+      )
+    );
+  };
+
+  const decrementQuantity = (id: string) => {
+    setCartItems(prevItems =>
+      prevItems
+        .map(p =>
+          p.id === id ? { ...p, quantity: p.quantity - 1 } : p
+        )
+        .filter(p => p.quantity > 0) // ✅ remove se quantidade 0
+    );
   };
 
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart }}>
+    <CartContext.Provider
+      value={{ cartItems, addToCart, incrementQuantity, decrementQuantity }}
+    >
       {children}
     </CartContext.Provider>
   );
-};
+}
 
-export const useCart = (): CartContextType => {
+export function useCart() {
   const context = useContext(CartContext);
   if (!context) {
-    throw new Error('useCart must be used within a CartProvider');
+    throw new Error('useCart precisa estar dentro do CartProvider');
   }
   return context;
-};
+}
