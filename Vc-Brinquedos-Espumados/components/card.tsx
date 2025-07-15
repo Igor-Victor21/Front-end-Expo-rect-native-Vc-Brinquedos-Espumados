@@ -42,16 +42,14 @@ export const Card = ({ name, image, description, price, id, toast } : Props)=> {
 };
 
     return (
-        <LinearGradient
-      colors={['rgba(231, 167, 199, 1)', 'rgba(167, 167, 231, 1)']}
-      start={{ x: 0.5, y: 0 }}
-      end={{ x: 0.5, y: 1 }}
+        <View
       style={styles.container} // Gradiente aplicado no container inteiro
     >
       <View style={styles.containerImg}>
         <Image 
           style={styles.imgstyle}
           source={{ uri: image }}
+          resizeMode='cover'
           accessibilityLabel="a"
         />
       </View>
@@ -69,7 +67,7 @@ export const Card = ({ name, image, description, price, id, toast } : Props)=> {
           <Image style={styles.favIcon} source={require('../assets/image/favorite-test-sem-figma.png')} />
         </TouchableOpacity>
       </View>
-    </LinearGradient>
+    </View>
            
             
         )
@@ -83,6 +81,14 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     width: 220,
     height: 290,
+      // IOS
+    shadowColor: 'rgba(14, 30, 37, 1)',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.32, 
+    shadowRadius: 12,     
+    // Android
+    elevation: 6,
+    zIndex: -1,
     
     },
     containerTxt: {
