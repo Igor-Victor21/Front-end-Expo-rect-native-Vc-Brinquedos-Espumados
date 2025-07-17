@@ -1,5 +1,5 @@
-import { apiVcEspumados } from '@/api/apiVcEspumados';
-import { Card } from '@/components/card';
+import { apiVcEspumados } from "@/api/apiVcEspumados";
+import { Card } from '../components/card';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -7,7 +7,8 @@ import { FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput,
 import InfoCell from '../components/cellphoneInfo';
 import Nav from '../components/nav-bar';
 import InfoModal from "./modal";
-
+import { ImageBackground } from 'react-native';
+import { useFonts } from 'expo-font';
 
 
 type Produto = {
@@ -21,6 +22,13 @@ type Produto = {
 
 export default function HomeScreen() {
 
+const [fontsLoaded] = useFonts({
+  'Baloo-SemiBold': require('../assets/fonts/Baloo2-SemiBold.ttf'),
+});
+
+if (!fontsLoaded) {
+  return null;
+}
   const [isModalVisible, setModalVisible] = useState(false);
   const [data, setData] = useState<Produto[]>([]);
   const [showToast, setShowToast] = useState(false)
@@ -103,21 +111,52 @@ const showCustomToast = (jaExiste: boolean) => {
         <Text style={styles.toastMessage}>{messageToast}</Text>
       </View>
       )}
-      <View style={styles.Card}>
-        <TouchableOpacity style={styles.UserImagePosition}>
-          <Image style={styles.UserImage} source={require('../assets/image/user-test-sem-figma.png')}/>
-        </TouchableOpacity>
-        <Text style={styles.MessageIntro}>Bom dia!</Text>
-        <Text style={styles.Slogan}>Tenha momentos divertidos e únicos com seus filhos com a VC brinquedos Espumados</Text>
-        <TextInput style={styles.SearchBar} placeholder='Procurar'/>
-      </View>
+      <View style={styles.headerContainer}>
+  <ImageBackground
+    source={require('../assets/image/header-bg.png')}
+    style={styles.headerBackground}
+    imageStyle={{ borderRadius: 20 }}
+  >
+    <TouchableOpacity style={styles.userIcon}>
+      <Image style={styles.userImage} source={require('../assets/image/user-test-sem-figma.png')} />
+    </TouchableOpacity>
+
+    <Text style={styles.headerGreeting}>Bom dia Michely!</Text>
+    <Text style={styles.headerSubtitle}>Brinquedos Espumados & Acessórios VC Store</Text>
+
+    <View style={styles.searchBar}>
+      <TextInput
+        placeholder="Procurar"
+        style={styles.searchInput}
+        placeholderTextColor="#999"
+      />
+      <Image source={require('../assets/image/icon-search.png')} style={styles.searchIcon} />
+    </View>
+  </ImageBackground>
+</View>
       <Text style={styles.Text}>Nova Coleção</Text>
 
       <View style={styles.Bar}>
         {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}> */}
-          <TouchableOpacity style={styles.Baritem} onPress={() => {setBarContent(1)}}><Text style={styles.textBtn}>Todos</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.Baritem} onPress={() => {setBarContent(2)}}><Text style={styles.textBtn}>Kits</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.Baritem} onPress={() => {setBarContent(3)}}><Text style={styles.textBtn}>Promoções</Text></TouchableOpacity>
+          <TouchableOpacity
+  style={[styles.filterButton, barContent === 1 && styles.activeFilter]}
+  onPress={() => setBarContent(1)}
+>
+  <Text style={[styles.filterText, barContent === 1 && styles.activeFilterText]}>Todos</Text>
+</TouchableOpacity>
+<TouchableOpacity
+  style={[styles.filterButton, barContent === 2 && styles.activeFilter]}
+  onPress={() => setBarContent(2)}
+>
+  <Text style={[styles.filterText, barContent === 2 && styles.activeFilterText]}>Kits</Text>
+</TouchableOpacity>
+<TouchableOpacity
+  style={[styles.filterButton, barContent === 3 && styles.activeFilter]}
+  onPress={() => setBarContent(3)}
+>
+  <Text style={[styles.filterText, barContent === 3 && styles.activeFilterText]}>Promoções</Text>
+</TouchableOpacity>
+
         {/* </ScrollView> */}
       </View>
 
@@ -170,15 +209,6 @@ const styles = StyleSheet.create({
   toastMessage:{
     color: '#fefefe'
   },
-   Card: {
-    display: 'flex',
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    marginBottom: 20,
-    marginHorizontal: 10,
-    backgroundColor: '#A7C7E7',
-    borderRadius: 10
-  },
   UserImagePosition: {
     width: '10%',
     right: '-90%',
@@ -205,17 +235,20 @@ const styles = StyleSheet.create({
     borderRadius: 999
   },
   Text: {
-    marginHorizontal: 10,
-    fontWeight: 'bold',
-    fontSize: 24,
-    fontFamily: 'Poppins'
+    marginHorizontal: 15,
+    color: '#7DACFF',
+    fontSize: 30,
+    fontFamily: 'Baloo-SemiBold'
+    
   },
   Bar: {
-    marginHorizontal: 10,
-    paddingTop: 10,
-    paddingBottom: 15,
-    flexDirection: 'row'
-  },
+  marginHorizontal: 10,
+  paddingTop: 10,
+  paddingBottom: 15,
+  flexDirection: 'row',
+  justifyContent: 'center', //  centraliza horizontalmente
+  gap: 11, // opcional (se versão do React Native suporte)
+},
   Baritem: {
     backgroundColor: '#7DACFF',
     borderRadius: 999,
@@ -235,11 +268,92 @@ const styles = StyleSheet.create({
     flexWrap: 'nowrap',
     height: 350,
     marginLeft: 0,
-   },
-   wrapCards: {
+  },
+  wrapCards: {
     display: 'flex'
-   },
+  },
    flatCards:{
     marginLeft: 5,
-   }
+  },
+   headerContainer: {
+    paddingHorizontal: 10,
+    marginTop: 10,
+  },
+  headerBackground: {
+    width: '100%',
+    borderRadius: 24,
+    padding: 60,
+    //shadowColor: '#000',
+    //shadowOpacity: 0.15,
+    //shadowRadius: 10,
+    position: 'relative',
+    backgroundColor: 'transparent',
+  },
+  userIcon: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    backgroundColor: '#fff',
+    padding: 8,
+    borderRadius: 40,
+  },
+  userImage: {
+    width: 30,
+    height: 30,
+  },
+  headerGreeting: {
+  fontSize: 38,
+  color: '#332623',
+  marginTop: 3,
+  fontFamily: 'Baloo-SemiBold',
+  textAlign: 'center',
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: '#332623',
+    marginBottom: 57,
+    fontFamily: 'Baloo-SemiBold',
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#DAE8FF',
+    borderRadius: 200,
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    borderWidth: 2,
+    borderColor: '#332623',
+  },
+  searchInput: {
+    flex: 1,
+    paddingVertical: 6,
+    fontSize: 14,
+  },
+  searchIcon: {
+    width: 20,
+    height: 20,
+    marginLeft: 10,
+  },
+ filterButton: {
+  borderWidth: 2, // borda mais grossa
+  borderColor: '#7DACFF',
+  borderRadius: 20,
+  paddingVertical: 8,
+  paddingHorizontal: 20,
+  marginHorizontal: 6,
+  minWidth: 100, //  largura mínima
+  alignItems: 'center',
+},
+  filterText: {
+    color: '#7DACFF',
+    fontFamily: 'Baloo-SemiBold',
+    fontSize: 14,
+    letterSpacing: 1.5, // aumenta o espaço entre letras
+  },
+  activeFilter: {
+    backgroundColor: '#7DACFF',
+  },
+  activeFilterText: {
+    color: '#fff',
+  },
 });
