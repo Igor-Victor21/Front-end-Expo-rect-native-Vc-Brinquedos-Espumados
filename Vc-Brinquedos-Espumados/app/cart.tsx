@@ -13,11 +13,8 @@ export default function CartScreen() {
   const total = subtotal;
 
   const handleZap = () => {
-    const itemList = cartItems.map((item) => ` • ${item.name} x${item.quantity} = R$${(item.price * item.quantity).toFixed(2)}`).join('/n')
-    const message = `Olá, gostaria de comprar o(s) seguinte(s) item(ns):
-                    ${itemList}
-                    \n
-                    pelo valor de: R$${total.toFixed(2)}`
+    const itemList = cartItems.map((item) => ` • ${item.name} x${item.quantity} = R$${(item.price * item.quantity).toFixed(2)}`).join('\n')
+    const message = `Olá, gostaria de comprar o(s) seguinte(s) item(ns):\n\n${itemList}\n\npelo valor de: R$${total.toFixed(2)}`
     const cleanMessage = encodeURIComponent(message)
     const URLzap = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${cleanMessage}`
     window.open(URLzap, "_blank")
