@@ -1,10 +1,13 @@
+import { apiVcEspumados } from '@/api/apiVcEspumados';
 import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Info from '../components/cellphoneInfo';
 import { useCart } from '../components/contexts/CartContext';
 
 export default function CartScreen() {
+  const [user, setUser] = useState(null);
   const { cartItems, incrementQuantity, decrementQuantity } = useCart();
 
   const whatsappNumber = "5541987446352"
@@ -12,11 +15,35 @@ export default function CartScreen() {
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   const total = subtotal;
 
+  const fullName = "";
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await apiVcEspumados.get(`/users/${encodeURIComponent(fullName)}`)
+        setUser(res.data)
+      } catch (err) {
+        console.error("Erro na busca de usuário: ", err)
+      }
+    }
+    fetchUser()
+  }, [fullName]);
+
   const handleZap = () => {
+    if (!user){
+      console.log("Carregando dados do usuário...")
+      return
+    }
+    
     const itemList = cartItems.map((item) => ` • ${item.name} x${item.quantity} = R$${(item.price * item.quantity).toFixed(2)}`).join('\n')
-    const message = `Olá, gostaria de comprar o(s) seguinte(s) item(ns):\n\n${itemList}\n\npelo valor de: R$${total.toFixed(2)}`
+
+    const userInfo = `Endereço: ${user.road}, ${user.numberHouse} - ${user.neighborhood}\nCidade: ${user.city} - ${user.uf}\nCEP: ${user.cep}\nComplemento: ${user.complement}
+    `.trim()
+
+    const message = `Olá, sou ${user.fullname} e gostaria de comprar o(s) seguinte(s) item(ns):\n\n${itemList}\n\nque fica no valor de: R$${total.toFixed(2)}\n\nLocalização para entrega:\n${userInfo}`
     const cleanMessage = encodeURIComponent(message)
     const URLzap = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${cleanMessage}`
+
     window.open(URLzap, "_blank")
   }
 
