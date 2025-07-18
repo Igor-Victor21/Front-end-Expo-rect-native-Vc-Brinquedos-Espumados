@@ -1,14 +1,25 @@
 import { router } from 'expo-router';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from 'react-native';
 import Info from '../components/cellphoneInfo';
 import { useCart } from '../components/contexts/CartContext';
 
 export default function CartScreen() {
   const { cartItems, incrementQuantity, decrementQuantity } = useCart();
 
+  const whatsappNumber = "5541987446352"
+
   const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   const total = subtotal;
+
+  const handleZap = () => {
+    const message = `Olá, gostaria de comprar o(s) seguinte(s) item(ns):
+                    ${cartItems}
+                    %0
+                    pelo valor de: R$${total.toFixed(2)}`
+    const URLzap = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${message}`
+    window.open(URLzap, "_blank")
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -62,6 +73,9 @@ export default function CartScreen() {
         <View style={styles.Total}>
           <Text style={styles.TextTotal}>TOTAL</Text>
           <Text style={styles.BuyValue}>R$ {total.toFixed(2)}</Text>
+          <TouchableOpacity onPress={handleZap}>
+            Finalizar Compra
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
