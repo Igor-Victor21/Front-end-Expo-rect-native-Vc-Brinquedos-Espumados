@@ -8,7 +8,6 @@ import InfoCell from '../components/cellphoneInfo';
 import Nav from '../components/nav-bar';
 import InfoModal from "./modal";
 import { ImageBackground } from 'react-native';
-import { useFonts } from 'expo-font';
 
 
 type Produto = {
@@ -22,13 +21,6 @@ type Produto = {
 
 export default function HomeScreen() {
 
-const [fontsLoaded] = useFonts({
-  'Baloo-SemiBold': require('../assets/fonts/Baloo2-SemiBold.ttf'),
-});
-
-if (!fontsLoaded) {
-  return null;
-}
   const [isModalVisible, setModalVisible] = useState(false);
   const [data, setData] = useState<Produto[]>([]);
   const [showToast, setShowToast] = useState(false)
@@ -81,13 +73,13 @@ if (!fontsLoaded) {
 
 
 const produtosFiltrados = data.filter((e) => {
-  if (barContent === 1) {
-    return e.description.trim() === "";
-  } else if (barContent === 2) {
-    return e.description.includes("|");
-  } else {
-    return e.description.trim() !== "" && !e.description.includes("|");
-  }
+  const secao = e.section?.toLowerCase() || '';
+
+  if (barContent === 1) return true; // "Todos" mostra tudo
+  if (barContent === 2) return secao === 'kits';
+  if (barContent === 3) return secao === 'promocoes';
+
+  return false;
 });
 
   //Função para mostrar Toast ao clicar to Touchable do card.tsx de favorite
@@ -113,7 +105,7 @@ const showCustomToast = (jaExiste: boolean) => {
       )}
       <View style={styles.headerContainer}>
   <ImageBackground
-    source={require('../assets/image/header-bg.png')}
+    source={require('../assets/image/header-bg.png')} // Coloque aqui uma imagem parecida com o Figma
     style={styles.headerBackground}
     imageStyle={{ borderRadius: 20 }}
   >
@@ -234,13 +226,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 999
   },
-  Text: {
-    marginHorizontal: 15,
-    color: '#7DACFF',
-    fontSize: 30,
-    fontFamily: 'Baloo-SemiBold'
-    
-  },
+ Text: {
+  marginHorizontal: 15,
+  color: '#7DACFF', // Alterado para aparecer melhor
+  fontSize: 28,
+  fontFamily: 'Baloo-SemiBold',
+  marginBottom: 15,
+  marginTop: 20,
+},
   Bar: {
   marginHorizontal: 10,
   paddingTop: 10,
@@ -269,91 +262,113 @@ const styles = StyleSheet.create({
     height: 350,
     marginLeft: 0,
   },
-  wrapCards: {
-    display: 'flex'
-  },
-   flatCards:{
-    marginLeft: 5,
-  },
-   headerContainer: {
-    paddingHorizontal: 10,
-    marginTop: 10,
-  },
-  headerBackground: {
-    width: '100%',
-    borderRadius: 24,
-    padding: 60,
-    //shadowColor: '#000',
-    //shadowOpacity: 0.15,
-    //shadowRadius: 10,
-    position: 'relative',
-    backgroundColor: 'transparent',
-  },
-  userIcon: {
-    position: 'absolute',
-    top: 15,
-    right: 15,
-    backgroundColor: '#fff',
-    padding: 8,
-    borderRadius: 40,
-  },
-  userImage: {
-    width: 30,
-    height: 30,
-  },
-  headerGreeting: {
-  fontSize: 38,
-  color: '#332623',
-  marginTop: 3,
-  fontFamily: 'Baloo-SemiBold',
-  textAlign: 'center',
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: '#332623',
-    marginBottom: 57,
-    fontFamily: 'Baloo-SemiBold',
-  },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#DAE8FF',
-    borderRadius: 200,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    borderWidth: 2,
-    borderColor: '#332623',
-  },
-  searchInput: {
-    flex: 1,
-    paddingVertical: 6,
-    fontSize: 14,
-  },
-  searchIcon: {
-    width: 20,
-    height: 20,
-    marginLeft: 10,
-  },
- filterButton: {
-  borderWidth: 2, // borda mais grossa
-  borderColor: '#7DACFF',
-  borderRadius: 20,
-  paddingVertical: 8,
-  paddingHorizontal: 20,
-  marginHorizontal: 6,
-  minWidth: 100, //  largura mínima
-  alignItems: 'center',
+ wrapCards: {
+  paddingLeft: 10,
 },
+
+flatCards: {
+  paddingRight: 16,
+},
+ headerContainer: {
+  paddingHorizontal: 16,
+  marginTop: 10,
+  marginBottom: 20, 
+},
+
+headerBackground: {
+  width: '100%',
+  borderRadius: 24,
+  paddingHorizontal: 20,
+  paddingTop: 30,
+  paddingBottom: 20, // menor altura
+  backgroundColor: 'transparent',
+},
+
+userIcon: {
+  position: 'absolute',
+  top: 12,
+  right: 12,
+  backgroundColor: '#fff',
+  borderRadius: 50,
+  padding: 6,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 3,
+  elevation: 3,
+},
+
+userImage: {
+  width: 36,
+  height: 36,
+  borderRadius: 18,
+},
+
+headerGreeting: {
+  fontSize: 43,
+  color: '#332623',
+  fontFamily: 'Baloo-SemiBold',
+  marginBottom: 4,
+  marginTop: 40,
+},
+
+headerSubtitle: {
+  fontSize: 16,
+  color: '#332623',
+  fontFamily: 'Baloo-SemiBold',
+  marginBottom: 70,
+  marginTop: -15,
+},
+
+searchBar: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#DAE8FF',
+  borderRadius: 999,
+  paddingHorizontal: 16,
+  paddingVertical: 15,
+  borderWidth: 1.5,
+  borderColor: '#332623',
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.05,
+  shadowRadius: 2,
+  elevation: 2,
+},
+
+searchInput: {
+  flex: 1,
+  fontSize: 14,
+  fontFamily: 'Baloo-SemiBold',
+},
+
+searchIcon: {
+  width: 20,
+  height: 20,
+  marginLeft: 10,
+},
+filterButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 29,
+    backgroundColor: '#fff',
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: '#7DACFF',
+    marginRight: 1,
+    paddingRight: -15,
+    marginHorizontal: 20,
+  },
   filterText: {
-    color: '#7DACFF',
-    fontFamily: 'Baloo-SemiBold',
+    color: '#003366',
+    fontWeight: '600',
     fontSize: 14,
-    letterSpacing: 1.5, // aumenta o espaço entre letras
+    fontFamily: 'Baloo-SemiBold',
+
   },
   activeFilter: {
     backgroundColor: '#7DACFF',
   },
   activeFilterText: {
     color: '#fff',
-  },
+    },
 });

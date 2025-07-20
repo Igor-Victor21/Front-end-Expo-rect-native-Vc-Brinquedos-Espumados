@@ -1,74 +1,120 @@
-import { router } from 'expo-router';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
+import { router, usePathname } from 'expo-router';
+import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
-// type NavItemsProps = {
-//   image: ImageSourcePropType;
-//   onPress: () => void;
-// }
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
+const AnimatedView = Animated.View;
 
-const icons = [{image: require('../assets/image/home-teste-sem-figma.png'),
-                onPress: () => router.push("/")
-              },
-               {image: require('../assets/image/cart-test-sem-figma.png'),
-                onPress: () => router.push("/cart")
-               },
-               {image: require('../assets/image/favorite-test-sem-figma.png'),
-                onPress: () => router.push("/favorite")
-               },
-               {image: require('../assets/image/user-test-sem-figma.png'),
-                onPress: () => router.push("/login")
-               }
-]
+const PRIMARY_COLOR = '#7DACFF';
+const SECONDARY_COLOR = '#fff';
 
-//Fazer o handlepress pra animação do navbar
-//Melhorar o css pra animação
+type RoutePath = '/' | '/cart' | '/favorite' | '/login';
 
-export default function Nav() {
+const icons: { image: any; label: string; route: RoutePath }[] = [
+  {
+    image: require('../assets/image/home-teste-sem-figma.png'),
+    label: 'Home',
+    route: '/',
+  },
+  {
+    image: require('../assets/image/cart-test-sem-figma.png'),
+    label: 'Carrinho',
+    route: '/cart',
+  },
+  {
+    image: require('../assets/image/favorite-test-sem-figma.png'),
+    label: 'Favoritos',
+    route: '/favorite',
+  },
+  {
+    image: require('../assets/image/Person.png'),
+    label: 'Perfil',
+    route: '/login',
+  },
+];
+
+export default function NavBar() {
+  const pathname = usePathname();
 
   return (
-    //primeira página a ser aberta showroom provavelmente fica aki
-    <>
-      <View style={styles.container}>
-        <View style={styles.nav}>
-          {icons.map((item, index) => (
-            <TouchableOpacity key={index} onPress={item.onPress} style={styles.options}>
-              <Image source={item.image} style={styles.icons} />
-            </TouchableOpacity>
-          ))}
-        </View>
-      </View>
-    </>
+    <AnimatedView
+      entering={FadeIn.duration(300)}
+      exiting={FadeOut.duration(300)}
+      style={styles.container}
+    >
+      {icons.map((item, index) => {
+        const isFocused =
+          item.route === '/' ? pathname === '/' : pathname.startsWith(item.route);
+
+
+        return (
+          <AnimatedTouchableOpacity
+            key={index}
+            onPress={() => router.push(item.route)}
+            layout={LinearTransition.springify().mass(0.5)}
+            style={[
+              styles.tabItem,
+              { backgroundColor: isFocused ? SECONDARY_COLOR : 'transparent' },
+            ]}
+          >
+            <Image
+              source={item.image}
+              style={[
+                styles.icon,
+                { tintColor: isFocused ? PRIMARY_COLOR : SECONDARY_COLOR },
+              ]}
+            />
+            {isFocused && (
+              <Animated.Text
+                entering={FadeIn.duration(200)}
+                exiting={FadeOut.duration(200)}
+                style={styles.text}
+              >
+                {item.label}
+              </Animated.Text>
+            )}
+          </AnimatedTouchableOpacity>
+        );
+      })}
+    </AnimatedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1, 
-    // backgroundColor: '#fff', // ou qualquer cor que ajude a ver a nav
-    // justifyContent: 'flex-start',
-  },
-  nav: {
-    position: 'fixed',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 70,
-    paddingHorizontal: 10,
+    position: 'absolute',
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#A7C7E7',
-    zIndex: 999,
-    // elevation: 10,
-  },
-  options: {
-    flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: PRIMARY_COLOR,
+    width: '80%',
+    alignSelf: 'center',
+    bottom: 40,
+    borderRadius: 40,
+    paddingHorizontal: 200,
+    paddingVertical: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    zIndex: 999,
   },
-  icons: {
-    width: 30,
-    height: 30,
+  tabItem: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 36,
+    paddingHorizontal: 13,
+    borderRadius: 30,
+  },
+  icon: {
+    width: 24,
+    height: 24,
     resizeMode: 'contain',
+  },
+  text: {
+    color: PRIMARY_COLOR,
+    marginLeft: 8,
+    fontWeight: '500',
   },
 });

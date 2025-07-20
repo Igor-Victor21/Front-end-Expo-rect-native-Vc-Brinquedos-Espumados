@@ -71,8 +71,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   img: {
-    height: 20,
-    width: 20
+    height: 10,
+    width: 10
   },
   batteryContainer: {
      flexDirection: 'row',

@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { Stack, Tabs } from 'expo-router';
 import { CartProvider } from '../components/contexts/CartContext';
 
 export default function Layout() {

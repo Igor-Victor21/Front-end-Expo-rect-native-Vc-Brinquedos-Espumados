@@ -2,8 +2,17 @@ import { apiVcEspumados } from '@/api/apiVcEspumados';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Alert } from "react-native";
 import Nav from '../components/nav-bar';
+
+type Produto = {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  price: number;
+  section: string; // 👈 adiciona isso
+};
 
 export default function UserAdmin() {
   //variáveis utilizadas
@@ -35,14 +44,18 @@ export default function UserAdmin() {
   const [products, setProducts] = useState([]);
   //variável para setar o produto selecionado
   const [selectedProduct, setSelectedProduct] = useState(null);
-  //variável usada para modificar os dados dos produtos
-  const [editProduct, setEditProduct] = useState({
-    name: '', description: '', measures: '', price: 0, image: ''
-  });
   //variável usada para criar um novo produto
-  const [newProduct, setNewProduct] = useState({
-    name: '', description: '', measures: '', price: 0, image: ''
+  const [newProduct, setNewProduct] = useState<Product>({
+    name: '',
+    description: '',
+    measures: '',
+    price: 0,
+    image: '',
+    section: '',
   });
+    //variável usada para modificar os dados dos produtos
+  const [editProduct, setEditProduct] = useState<Product | null>(null);
+
   //variável que controla exibição do bloco de produtos
   const [showProducts, setShowProducts] = useState(false);
   const [showCreateProductForm, setShowCreateProductForm] = useState(false);
@@ -196,14 +209,21 @@ export default function UserAdmin() {
 
   // editar as informações de um produto
   const handleUpdateProduct = async () => {
-    try {
-      if (!selectedProduct?.id) return;
-      await apiVcEspumados.put(`/products/${selectedProduct.id}`, editProduct);
+  if (!editProduct || !editProduct.id) return;
+
+  try {
+    await apiVcEspumados.put(`/products/${editProduct.id}`, editProduct);
+    Alert.alert('Sucesso', 'Produto atualizado com sucesso!');
+      setEditProduct(null);
       fetchProducts();
-      setSelectedProduct(null);
-    } catch (err) {
-      setError('Erro ao atualizar produto');
+    } catch (error) {
+      console.error('Erro ao atualizar produto:', error);
+      Alert.alert('Erro', 'Não foi possível atualizar o produto');
     }
+  };
+
+  const handleCancelEdit = () => {
+    setEditProduct(null);
   };
 
   // deletar um produto
@@ -218,17 +238,24 @@ export default function UserAdmin() {
   };
 
   // criar um novo produto
-  const handleCreateProduct = async () => {
-    try {
-      const body = { ...newProduct, price: Number(newProduct.price) };
-      await apiVcEspumados.post('/products', body);
-      fetchProducts();
-      setShowCreateProductForm(false);
-      setNewProduct({ name: '', description: '', measures: '', price: 0, image: '' });
-    } catch (err) {
-      setError('Erro ao criar produto');
-    }
-  };
+const handleCreateProduct = async () => {
+  try {
+    await apiVcEspumados.post('/products', newProduct);
+    Alert.alert('Sucesso', 'Produto criado com sucesso!');
+    setNewProduct({
+      name: '',
+      description: '',
+      measures: '',
+      price: 0,
+      image: '',
+      section: 'Todos',
+    });
+    fetchProducts();
+  } catch (error) {
+    console.error('Erro ao criar produto:', error);
+    Alert.alert('Erro', 'Não foi possível criar o produto');
+  }
+};
 
   // alternar exibição dos produtos
   const toggleShowProducts = () => {
@@ -255,13 +282,14 @@ export default function UserAdmin() {
   };
 
   //labels para os campos de produto
-  const productLabels = {
-    name: "Nome do Produto",
-    description: "Descrição",
-    measures: "Medidas",
-    price: "Preço",
-    image: "Imagem (URL)"
-  };
+  const productLabels: Record<string, string> = {
+    name: 'Nome',
+    description: 'Descrição',
+    measures: 'Medidas',
+    price: 'Preço',
+    image: 'URL da imagem',
+    section: 'Todos',
+};
 
   return (
     <>
@@ -405,7 +433,7 @@ export default function UserAdmin() {
         {showProducts && (
           <ScrollView contentContainerStyle={{ padding: 20 }}>
             {/* Editar produto */}
-            {selectedProduct && (
+            {selectedProduct && editProduct && (
               <View style={styles.itemList}>
                 <Text style={styles.titleName}>Editar Produto</Text>
 
@@ -469,6 +497,34 @@ export default function UserAdmin() {
 
         <Nav image={0} onPress={() => { }} />
       </View>
+
+      {/* Seção dos produtos */}
+      <View style={{ flexDirection: 'row', gap: 10, marginBottom: 10 }}>
+        {['Todos', 'Kits', 'Promoções'].map((sec) => (
+          <TouchableOpacity
+            key={sec}
+            onPress={() => setNewProduct({ ...newProduct, section: sec })}
+            style={{
+              backgroundColor:
+              newProduct.section === sec ? '#4F8EF7' : '#E0E0E0',
+              paddingVertical: 6,
+              paddingHorizontal: 12,
+              borderRadius: 20,
+            }}
+            >
+            <Text
+          style={{
+            color: newProduct.section === sec ? 'white' : 'black',
+            fontWeight: 'bold',
+          }}
+            >
+          {sec}
+            </Text>
+            </TouchableOpacity>
+          ))}
+      </View>
+
+
     </>
   );
 }

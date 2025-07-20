@@ -47,7 +47,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         .map(p =>
           p.id === id ? { ...p, quantity: p.quantity - 1 } : p
         )
-        .filter(p => p.quantity > 0) // ✅ remove se quantidade 0
+        .filter(p => p.quantity > 0) //  remove se quantidade 0
     );
   };
 
