@@ -63,11 +63,14 @@ export const Card = ({ name, image, description, price, id, toast } : Props)=> {
           <Text style={styles.showPrice}>R$ {price.toFixed(2)}</Text>
         </View>
 
-        <TouchableOpacity style={styles.conteinerIcon} onPress={handleFavoriteProduct}>
+        <TouchableOpacity style={styles.conteinerIconfav} onPress={handleFavoriteProduct}>
           <Image style={styles.favIcon} source={require('../assets/image/favorite-test-sem-figma.png')} />
         </TouchableOpacity>
-      </View>
-    </View>
+      </View> 
+       <TouchableOpacity style={styles.conteinerIconcart} onPress={handleFavoriteProduct}>
+          <Image style={styles.CartIcon} source={require('../assets/image/CarrinhoCards.jpg')} />
+        </TouchableOpacity>
+    </View> //Continuar aqui --> CarrinhoCards.jpg')}
            
             
         )
@@ -106,25 +109,24 @@ const styles = StyleSheet.create({
     fontSize: 21,
     width: 130,
     },
-    titleDesc:{
-    fontWeight: '300',
+    titleDesc: {
+    fontFamily: 'Baloo-SemiBold',
     fontSize: 18,
     width: 150
-    
-    },
+},
     titlePrice:{
     fontWeight: '300',
     fontSize: 12,
     },
-    showPrice:{
-    fontWeight: '700',
+    showPrice: {
+    fontFamily: 'Baloo-SemiBold',
     fontSize: 21,
     width: 200
     },
     containerImg:{
     borderWidth: 0,
     borderRadius: 25,
-    width: 180,
+    width: 176,
     height: 145,
     alignSelf: 'center',
     marginVertical: "3%",
@@ -138,13 +140,10 @@ const styles = StyleSheet.create({
     title: {
 
     },
-    conteinerIcon:{
+    conteinerIconfav: {
     position: 'absolute',
-    width: 20,
-    height: 20,
-    left: '162%',
-    top: "15%",
-    // filter: 'invert(1)',
+    right: -79,
+    top: 20,
     },
     favIcon:{
 

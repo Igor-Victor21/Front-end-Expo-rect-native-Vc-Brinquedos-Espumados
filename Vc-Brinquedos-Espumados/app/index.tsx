@@ -3,12 +3,10 @@ import { Card } from '../components/card';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { FlatList,Image,SafeAreaView,ScrollView,StyleSheet,Text,TextInput,TouchableOpacity,View,ImageBackground } from 'react-native';
 import InfoCell from '../components/cellphoneInfo';
 import Nav from '../components/nav-bar';
 import InfoModal from "./modal";
-import { ImageBackground } from 'react-native';
-
 
 type Produto = {
   id: number;
@@ -16,22 +14,17 @@ type Produto = {
   description: string;
   image: string;
   price: number;
+  section?: string; // adiciona isso para evitar erro em .section
 };
 
-
 export default function HomeScreen() {
-
   const [isModalVisible, setModalVisible] = useState(false);
   const [data, setData] = useState<Produto[]>([]);
-  const [showToast, setShowToast] = useState(false)
-  const [messageToast, setMessageToast] = useState('')
-  const [barContent, setBarContent] = useState(1)
-  
-  
+  const [showToast, setShowToast] = useState(false);
+  const [messageToast, setMessageToast] = useState('');
+  const [barContent, setBarContent] = useState(1);
 
   useEffect(() => {
-    // Função verifica se o Modal ja foi visto anteriormente, se não foi visto anteriormente, criara uma chave 'hasSeenModal' com o valor 'true'
-    // Não mostrando novamente ao abrir o aplicativo.
     const checkModalStatus = async () => {
       try {
         const hasSeenModal = await AsyncStorage.getItem('hasSeenModal');
@@ -45,143 +38,114 @@ export default function HomeScreen() {
     };
 
     const fetchData = async () => {
-    // Função de fetch dos cards para pegar os dados dos produtos do backend
-        try {
-          const response = await apiVcEspumados.get<Produto[]>('/products');
-          console.log('Dados da API:', response.data); // <--- Aqui
-          setData(response.data);
-        } catch (error) {
-          console.error('Erro ao buscar produtos:', error);
-        }
-      };    
+      try {
+        const response = await apiVcEspumados.get<Produto[]>('/products');
+        setData(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar produtos:', error);
+      }
+    };
 
     checkModalStatus();
     fetchData();
-    // const separateData = async () => {}
-    //   separateData();
   }, []);
 
-  // Função do touchable(cards dos produtos) para levar o usuario para pagina do produto.
   const handleProduct = (item: Produto) => {
-
-    console.log(item.id)
     router.push({
       pathname: '/product/[id]',
       params: { id: item.id.toString() },
     });
   };
 
+  const produtosFiltrados = data.filter((e) => {
+    const secao = e.section?.toLowerCase() || '';
+    if (barContent === 1) return true;
+    if (barContent === 2) return secao === 'kits';
+    if (barContent === 3) return secao === 'promocoes';
+    return false;
+  });
 
-const produtosFiltrados = data.filter((e) => {
-  const secao = e.section?.toLowerCase() || '';
-
-  if (barContent === 1) return true; // "Todos" mostra tudo
-  if (barContent === 2) return secao === 'kits';
-  if (barContent === 3) return secao === 'promocoes';
-
-  return false;
-});
-
-  //Função para mostrar Toast ao clicar to Touchable do card.tsx de favorite
-const showCustomToast = (jaExiste: boolean) => {
-  if (!jaExiste) {
-    setMessageToast('Item favoritado!');
-  } else {
-    setMessageToast('Este item já está favoritado!');
-  }
-  setShowToast(true);
-  setTimeout(() => setShowToast(false), 2000);
-};
+  const showCustomToast = (jaExiste: boolean) => {
+    setMessageToast(jaExiste ? 'Este item já está favoritado!' : 'Item favoritado!');
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
+  };
 
   return (
-      <>
-      
+    <>
       <InfoModal visible={isModalVisible} onClose={() => setModalVisible(false)} />
-      <InfoCell/>
+      <InfoCell />
+
       {showToast && (
-      <View style={styles.toastConteiner}>
-        <Text style={styles.toastMessage}>{messageToast}</Text>
-      </View>
+        <View style={styles.toastConteiner}>
+          <Text style={styles.toastMessage}>{messageToast}</Text>
+        </View>
       )}
+
       <View style={styles.headerContainer}>
-  <ImageBackground
-    source={require('../assets/image/header-bg.png')} // Coloque aqui uma imagem parecida com o Figma
-    style={styles.headerBackground}
-    imageStyle={{ borderRadius: 20 }}
-  >
-    <TouchableOpacity style={styles.userIcon}>
-      <Image style={styles.userImage} source={require('../assets/image/user-test-sem-figma.png')} />
-    </TouchableOpacity>
+        <ImageBackground
+          source={require('../assets/image/header-bg.png')}
+          style={styles.headerBackground}
+          imageStyle={{ borderRadius: 20 }}
+        >
+          <TouchableOpacity style={styles.userIcon}>
+            <Image style={styles.userImage} source={require('../assets/image/user-test-sem-figma.png')} />
+          </TouchableOpacity>
 
-    <Text style={styles.headerGreeting}>Bom dia Michely!</Text>
-    <Text style={styles.headerSubtitle}>Brinquedos Espumados & Acessórios VC Store</Text>
+          <Text style={styles.headerGreeting}>Bom dia Michely!</Text>
+          <Text style={styles.headerSubtitle}>Brinquedos Espumados & Acessórios VC Store</Text>
 
-    <View style={styles.searchBar}>
-      <TextInput
-        placeholder="Procurar"
-        style={styles.searchInput}
-        placeholderTextColor="#999"
-      />
-      <Image source={require('../assets/image/icon-search.png')} style={styles.searchIcon} />
-    </View>
-  </ImageBackground>
-</View>
+          <View style={styles.searchBar}>
+            <TextInput
+              placeholder="Procurar"
+              style={styles.searchInput}
+              placeholderTextColor="#999"
+            />
+            <Image source={require('../assets/image/icon-search.png')} style={styles.searchIcon} />
+          </View>
+        </ImageBackground>
+      </View>
+
       <Text style={styles.Text}>Nova Coleção</Text>
 
       <View style={styles.Bar}>
-        {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}> */}
-          <TouchableOpacity
-  style={[styles.filterButton, barContent === 1 && styles.activeFilter]}
-  onPress={() => setBarContent(1)}
->
-  <Text style={[styles.filterText, barContent === 1 && styles.activeFilterText]}>Todos</Text>
-</TouchableOpacity>
-<TouchableOpacity
-  style={[styles.filterButton, barContent === 2 && styles.activeFilter]}
-  onPress={() => setBarContent(2)}
->
-  <Text style={[styles.filterText, barContent === 2 && styles.activeFilterText]}>Kits</Text>
-</TouchableOpacity>
-<TouchableOpacity
-  style={[styles.filterButton, barContent === 3 && styles.activeFilter]}
-  onPress={() => setBarContent(3)}
->
-  <Text style={[styles.filterText, barContent === 3 && styles.activeFilterText]}>Promoções</Text>
-</TouchableOpacity>
-
-        {/* </ScrollView> */}
+        <TouchableOpacity style={[styles.filterButton, barContent === 1 && styles.activeFilter]} onPress={() => setBarContent(1)}>
+          <Text style={[styles.filterText, barContent === 1 && styles.activeFilterText]}>Todos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.filterButton, barContent === 2 && styles.activeFilter]} onPress={() => setBarContent(2)}>
+          <Text style={[styles.filterText, barContent === 2 && styles.activeFilterText]}>Kits</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.filterButton, barContent === 3 && styles.activeFilter]} onPress={() => setBarContent(3)}>
+          <Text style={[styles.filterText, barContent === 3 && styles.activeFilterText]}>Promoções</Text>
+        </TouchableOpacity>
       </View>
 
-      <View>
-                <ScrollView style={styles.conteinerCards} alwaysBounceHorizontal={true} horizontal={true}>
-                <SafeAreaView style={styles.wrapCards}>
-                        <FlatList
-                        data={produtosFiltrados}
-                        horizontal={true}
-                        style={styles.flatCards}
-                        renderItem={({ item }) => (
-                          <TouchableOpacity onPress={() => handleProduct(item)}  style={{ marginRight: 16 }}>
-                            <Card
-                            key={item.id}
-                            name={item.name}
-                            description={item.description}
-                            image={item.image}
-                            price={item.price}
-                            id={item.id}
-                            toast={(jaExiste) => showCustomToast(jaExiste)}
-                          />
-                          </TouchableOpacity>
-                        )}
-                        keyExtractor={(item) => item.id.toString()}
-                        />
-                 </SafeAreaView>
-              </ScrollView>
-              
-      </View>
-      <Nav/>
-      
-      </>
+      <ScrollView style={styles.conteinerCards} horizontal={true}>
+        <SafeAreaView style={styles.wrapCards}>
+          <FlatList
+            data={produtosFiltrados}
+            horizontal={barContent<2 ? false : true} //scroll de arrastar
+            style={styles.flatCards}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => handleProduct(item)} style={{ marginRight: 16 }}>
+                <Card
+                  key={item.id}
+                  name={item.name}
+                  description={item.description}
+                  image={item.image}
+                  price={item.price}
+                  id={item.id}
+                  toast={(jaExiste) => showCustomToast(jaExiste)}
+                />
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item) => item.id.toString()}
+          />
+        </SafeAreaView>
+      </ScrollView>
 
+      <Nav />
+    </>
   );
 }
 
@@ -240,7 +204,7 @@ const styles = StyleSheet.create({
   paddingBottom: 15,
   flexDirection: 'row',
   justifyContent: 'center', //  centraliza horizontalmente
-  gap: 11, // opcional (se versão do React Native suporte)
+  gap: 11, // opcional 
 },
   Baritem: {
     backgroundColor: '#7DACFF',
@@ -257,13 +221,13 @@ const styles = StyleSheet.create({
   },
   conteinerCards:{
     display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'nowrap',
     height: 350,
-    marginLeft: 0,
+    marginLeft: 2,
   },
  wrapCards: {
   paddingLeft: 10,
+  flexWrap: "wrap",
+  flexDirection: "column"
 },
 
 flatCards: {
@@ -316,8 +280,8 @@ headerSubtitle: {
   fontSize: 16,
   color: '#332623',
   fontFamily: 'Baloo-SemiBold',
-  marginBottom: 70,
-  marginTop: -15,
+  marginBottom: 59,
+  marginTop: -1,
 },
 
 searchBar: {
@@ -361,7 +325,7 @@ filterButton: {
   filterText: {
     color: '#003366',
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: 'Baloo-SemiBold',
 
   },
