@@ -1,11 +1,12 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type CartItem = {
   id: string;
   name: string;
   price: number;
   image: string;
-  quantity: number; // ✅ novo campo
+  quantity: number;
 };
 
 type CartContextType = {
@@ -19,6 +20,26 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  // ✅ Carrega dados do AsyncStorage ao iniciar
+  useEffect(() => {
+    const loadCart = async () => {
+      try {
+        const data = await AsyncStorage.getItem('cartItems');
+        if (data) {
+          setCartItems(JSON.parse(data));
+        }
+      } catch (error) {
+        console.error('Erro ao carregar carrinho:', error);
+      }
+    };
+    loadCart();
+  }, []);
+
+  // ✅ Salva dados no AsyncStorage sempre que mudar
+  useEffect(() => {
+    AsyncStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addToCart = (item: Omit<CartItem, 'quantity'>) => {
     setCartItems(prevItems => {
@@ -47,7 +68,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         .map(p =>
           p.id === id ? { ...p, quantity: p.quantity - 1 } : p
         )
-        .filter(p => p.quantity > 0) //  remove se quantidade 0
+        .filter(p => p.quantity > 0)
     );
   };
 

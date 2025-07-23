@@ -1,153 +1,169 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { StyleSheet, Text, Image, View, TouchableOpacity } from 'react-native';
 
-
-
-interface Props{
-  name: string,
-  image: string,
-  description: string,
-  price: Number,
-  id: Number,
-  toast: (jaExiste: boolean) => void; 
+interface Props {
+  name: string;
+  image: string;
+  description: string;
+  price: number;
+  id: number;
+  toast: (jaExiste: boolean) => void;
+  onCartPress: () => void;
+  onPress: () => void;
+  toastCart: () => void;
 }
 
-export const Card = ({ name, image, description, price, id, toast } : Props)=> {
-  
+export const Card = ({
+  name,
+  image,
+  description,
+  price,
+  id,
+  toast,
+  onCartPress,
+  onPress,
+  toastCart,
+}: Props) => {
   const [productFavorite, setProductFavorite] = useState(false);
 
   const handleFavoriteProduct = async () => {
-  try {
-    // Pega os favoritos existentes
-    const stored = await AsyncStorage.getItem('favoritos');
-    const favoritos: { id: number, name: string }[] = stored ? JSON.parse(stored) : [];
+    try {
+      const stored = await AsyncStorage.getItem('favoritos');
+      const favoritos: { id: number; name: string }[] = stored ? JSON.parse(stored) : [];
 
-    // Verifica se já está favoritado
-    const jaExiste = favoritos.some(produto => produto.id === id);
+      const jaExiste = favoritos.some(produto => produto.id === id);
 
-    if (!jaExiste) {
-      const novosFavoritos = [...favoritos, { id, name }];
-      await AsyncStorage.setItem('favoritos', JSON.stringify(novosFavoritos));
-      setProductFavorite(true);
-      console.log('Toast será chamado');
+      if (!jaExiste) {
+        const novosFavoritos = [...favoritos, { id, name }];
+        await AsyncStorage.setItem('favoritos', JSON.stringify(novosFavoritos));
+        setProductFavorite(true);
+      }
+
+      toast(jaExiste);
+    } catch (error) {
+      console.error('Erro ao favoritar produto:', error);
     }
+  };
 
-    console.log('Chamando toast com jaExiste:', jaExiste);
-    toast(jaExiste); // ← envia status do favorito
-  } catch (error) {
-    console.error('Erro ao favoritar produto:', error);
-  }
+  return (
+    <View style={styles.container}>
+      <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
+        <View>
+          <View style={styles.containerImg}>
+            <Image
+              style={styles.imgstyle}
+              source={{ uri: image }}
+              resizeMode='cover'
+            />
+          </View>
+
+          <View style={styles.containerTxt}>
+            <View style={styles.titleRow}>
+              <Text
+                style={styles.titleName}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {name}
+              </Text>
+              <TouchableOpacity style={styles.iconButton} onPress={handleFavoriteProduct}>
+                <Image style={styles.favIcon} source={require('../assets/image/favorite-test-sem-figma.png')} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.titleDesc}>{description}</Text>
+            <Text style={styles.titlePrice}>Preço</Text>
+            <Text style={styles.showPrice}>R$ {price.toFixed(2)}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+
+      {/* Botão do carrinho */}
+      <TouchableOpacity
+          style={styles.conteinerIconcart}
+          onPress={() => {
+            onCartPress();
+            toastCart(); // 👈 mostra o toast!
+          }}
+        >
+          <Image style={styles.CartIcon} source={require('../assets/image/CarrinhoCards.jpg')} />
+      </TouchableOpacity>
+    </View>
+  );
 };
 
-    return (
-        <View
-      style={styles.container} // Gradiente aplicado no container inteiro
-    >
-      <View style={styles.containerImg}>
-        <Image 
-          style={styles.imgstyle}
-          source={{ uri: image }}
-          resizeMode='cover'
-          accessibilityLabel="a"
-        />
-      </View>
-
-      <View style={styles.containerTxt}>
-        <Text style={styles.titleName}>{name}</Text>
-        <Text style={styles.titleDesc}>{description}</Text>
-
-        <View>
-          <Text style={styles.titlePrice}>Preço</Text>
-          <Text style={styles.showPrice}>R$ {price.toFixed(2)}</Text>
-        </View>
-
-        <TouchableOpacity style={styles.conteinerIconfav} onPress={handleFavoriteProduct}>
-          <Image style={styles.favIcon} source={require('../assets/image/favorite-test-sem-figma.png')} />
-        </TouchableOpacity>
-      </View> 
-       <TouchableOpacity style={styles.conteinerIconcart} onPress={handleFavoriteProduct}>
-          <Image style={styles.CartIcon} source={require('../assets/image/CarrinhoCards.jpg')} />
-        </TouchableOpacity>
-    </View> //Continuar aqui --> CarrinhoCards.jpg')}
-           
-            
-        )
-}
-
 const styles = StyleSheet.create({
-    container:{
-    display: 'flex',
-    justifyContent: 'center',
-    alignContent: 'center',
+  container: {
     borderRadius: 15,
-    width: 220,
+    width: '100%',
+    maxWidth: 180,
     height: 290,
-      // IOS
+    backgroundColor: '#fff',
     shadowColor: 'rgba(14, 30, 37, 1)',
     shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.32, 
-    shadowRadius: 12,     
-    // Android
+    shadowOpacity: 0.32,
+    shadowRadius: 12,
     elevation: 6,
-    zIndex: -1,
-    
-    },
-    containerTxt: {
-    display: 'flex',
-    alignItems: 'flex-start',
-    alignSelf: 'flex-start',
-    width: 100,
-    height: 'auto',
-    marginLeft: 20,
-    marginBottom: '9%',
-    },
-    titleName:{
-    textAlign: 'left',
+    marginBottom: 20,
+  },
+  containerImg: {
+    width: '100%',
+    height: 140,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    overflow: 'hidden',
+  },
+  imgstyle: {
+    width: '100%',
+    height: '100%',
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+  },
+  containerTxt: {
+    padding: 10,
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  titleName: {
     fontWeight: '500',
-    fontSize: 21,
-    width: 130,
-    },
-    titleDesc: {
-    fontFamily: 'Baloo-SemiBold',
     fontSize: 18,
-    width: 150
-},
-    titlePrice:{
+    flex: 1,
+    marginRight: 5,
+  },
+  iconButton: {
+    padding: 4,
+  },
+  titleDesc: {
+    fontFamily: 'Baloo-SemiBold',
+    fontSize: 14,
+    marginTop: 4,
+  },
+  titlePrice: {
     fontWeight: '300',
     fontSize: 12,
-    },
-    showPrice: {
+    marginTop: 6,
+  },
+  showPrice: {
     fontFamily: 'Baloo-SemiBold',
-    fontSize: 21,
-    width: 200
-    },
-    containerImg:{
-    borderWidth: 0,
-    borderRadius: 25,
-    width: 176,
-    height: 145,
-    alignSelf: 'center',
-    marginVertical: "3%",
-
-    },
-    imgstyle: {
-    width: 180, 
-    height: 160, 
-    borderRadius: 10,
-    },
-    title: {
-
-    },
-    conteinerIconfav: {
+    fontSize: 18,
+  },
+  favIcon: {
+    width: 22,
+    height: 22,
+  },
+  conteinerIconcart: {
     position: 'absolute',
-    right: -79,
-    top: 20,
-    },
-    favIcon:{
-
-    width: 25,
-    height: 25,
-    }
-})
+    bottom: 70,
+    right: 10,
+  },
+  CartIcon: {
+    width: 28,
+    height: 28,
+  },
+});

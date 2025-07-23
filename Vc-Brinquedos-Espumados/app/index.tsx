@@ -1,12 +1,16 @@
 import { apiVcEspumados } from "@/api/apiVcEspumados";
 import { Card } from '../components/card';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { FlatList,Image,SafeAreaView,ScrollView,StyleSheet,Text,TextInput,TouchableOpacity,View,ImageBackground } from 'react-native';
+import { FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, ImageBackground } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import InfoCell from '../components/cellphoneInfo';
 import Nav from '../components/nav-bar';
 import InfoModal from "./modal";
+
+// ✅ Importa o hook
+import { useCart } from '../components/contexts/CartContext';
 
 type Produto = {
   id: number;
@@ -14,7 +18,7 @@ type Produto = {
   description: string;
   image: string;
   price: number;
-  section?: string; // adiciona isso para evitar erro em .section
+  section?: string;
 };
 
 export default function HomeScreen() {
@@ -23,6 +27,9 @@ export default function HomeScreen() {
   const [showToast, setShowToast] = useState(false);
   const [messageToast, setMessageToast] = useState('');
   const [barContent, setBarContent] = useState(1);
+
+  // ✅ Aqui você obtém a função do contexto
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const checkModalStatus = async () => {
@@ -69,6 +76,12 @@ export default function HomeScreen() {
     setMessageToast(jaExiste ? 'Este item já está favoritado!' : 'Item favoritado!');
     setShowToast(true);
     setTimeout(() => setShowToast(false), 2000);
+  };
+
+  const showCartToast = () => {
+  setMessageToast('Item adicionado ao carrinho!');
+  setShowToast(true);
+  setTimeout(() => setShowToast(false), 2000);
   };
 
   return (
@@ -120,34 +133,41 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.conteinerCards} horizontal={true}>
-        <SafeAreaView style={styles.wrapCards}>
-          <FlatList
-            data={produtosFiltrados}
-            horizontal={barContent<2 ? false : true} //scroll de arrastar
-            style={styles.flatCards}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => handleProduct(item)} style={{ marginRight: 16 }}>
-                <Card
-                  key={item.id}
-                  name={item.name}
-                  description={item.description}
-                  image={item.image}
-                  price={item.price}
-                  id={item.id}
-                  toast={(jaExiste) => showCustomToast(jaExiste)}
-                />
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item) => item.id.toString()}
-          />
-        </SafeAreaView>
-      </ScrollView>
-
+      <FlatList
+        data={produtosFiltrados}
+        numColumns={2}
+        columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 16 }}
+        contentContainerStyle={{ paddingHorizontal: 12 }}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={{ flex: 1, marginRight: 8 }}>
+            <Card
+              key={item.id}
+              name={item.name}
+              description={item.description}
+              image={item.image}
+              price={item.price}
+              id={item.id}
+              toast={showCustomToast}
+              onCartPress={() =>
+                addToCart({
+                  id: item.id.toString(),
+                  name: item.name,
+                  image: item.image,
+                  price: item.price,
+                })
+              }
+              onPress={() => handleProduct(item)}
+              toastCart={showCartToast}
+            />
+          </View>
+        )}
+      />
       <Nav />
     </>
   );
 }
+
 
 const styles = StyleSheet.create({
   toastConteiner:{
