@@ -13,6 +13,7 @@ export default function Layout() {
     'Baloo2-Bold': require('../assets/fonts/Baloo2-Bold.ttf'),
     'Montserrat': require('../assets/fonts/BalooBhaijaan2-Bold.ttf'),
     'Inter': require('../assets/fonts/BalooBhaijaan2-SemiBold.ttf'),
+    'Poppins': require('../assets/fonts/Poppins-SemiBold.ttf'),
   });
 
   // Libera a SplashScreen assim que as fontes carregarem

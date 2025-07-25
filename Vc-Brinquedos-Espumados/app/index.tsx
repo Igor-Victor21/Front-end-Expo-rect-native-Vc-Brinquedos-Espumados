@@ -8,8 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import InfoCell from '../components/cellphoneInfo';
 import Nav from '../components/nav-bar';
 import InfoModal from "./modal";
-
-// ✅ Importa o hook
 import { useCart } from '../components/contexts/CartContext';
 
 type Produto = {
