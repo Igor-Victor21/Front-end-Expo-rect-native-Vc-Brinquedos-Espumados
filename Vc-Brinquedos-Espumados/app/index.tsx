@@ -10,7 +10,8 @@ import Nav from '../components/nav-bar';
 import InfoModal from "./modal";
 import { useCart } from '../components/contexts/CartContext';
 
-type Produto = {
+type CartItem = Produto & {
+  quantity: number;
   id: number;
   name: string;
   description: string;
@@ -25,6 +26,7 @@ export default function HomeScreen() {
   const [showToast, setShowToast] = useState(false);
   const [messageToast, setMessageToast] = useState('');
   const [barContent, setBarContent] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // ✅ Aqui você obtém a função do contexto
   const { addToCart } = useCart();
@@ -62,12 +64,18 @@ export default function HomeScreen() {
     });
   };
 
-  const produtosFiltrados = data.filter((e) => {
-    const secao = e.section?.toLowerCase() || '';
-    if (barContent === 1) return true;
-    if (barContent === 2) return secao === 'kits';
-    if (barContent === 3) return secao === 'promocoes';
-    return false;
+  const produtosFiltrados = data.filter((produto) => {
+    const secao = produto.section?.toLowerCase() || '';
+    const nome = produto.name.toLowerCase();
+    const busca = searchQuery.toLowerCase();
+
+    const filtroCategoria = barContent === 1
+      || (barContent === 2 && secao === 'kits')
+     || (barContent === 3 && secao === 'promocoes');
+
+    const filtroBusca = nome.includes(busca);
+
+    return filtroCategoria && filtroBusca;
   });
 
   const showCustomToast = (jaExiste: boolean) => {
@@ -111,6 +119,8 @@ export default function HomeScreen() {
               placeholder="Procurar"
               style={styles.searchInput}
               placeholderTextColor="#999"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
             />
             <Image source={require('../assets/image/icon-search.png')} style={styles.searchIcon} />
           </View>
@@ -134,11 +144,11 @@ export default function HomeScreen() {
       <FlatList
         data={produtosFiltrados}
         numColumns={2}
-        columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 16 }}
-        contentContainerStyle={{ paddingHorizontal: 12 }}
+        columnWrapperStyle={{ justifyContent: 'center', gap: 16, marginBottom: 16 }}
+        contentContainerStyle={{ paddingBottom: 100 }} // pode ajustar como quiser
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={{ flex: 1, marginRight: 8 }}>
+          <View style={{ width: 180, marginHorizontal: 8 }}>
             <Card
               key={item.id}
               name={item.name}
@@ -153,6 +163,7 @@ export default function HomeScreen() {
                   name: item.name,
                   image: item.image,
                   price: item.price,
+                  section: item.section,
                 })
               }
               onPress={() => handleProduct(item)}
@@ -217,12 +228,12 @@ const styles = StyleSheet.create({
   marginTop: 20,
 },
   Bar: {
-  marginHorizontal: 10,
-  paddingTop: 10,
-  paddingBottom: 15,
   flexDirection: 'row',
-  justifyContent: 'center', //  centraliza horizontalmente
-  gap: 11, // opcional 
+  justifyContent: 'center',
+  alignItems: 'center',
+  gap: 30,
+  marginBottom: 20,
+  paddingHorizontal: 16, // opcional
 },
   Baritem: {
     backgroundColor: '#7DACFF',
@@ -270,9 +281,12 @@ userIcon: {
   position: 'absolute',
   top: 12,
   right: 12,
-  backgroundColor: '#fff',
-  borderRadius: 50,
-  padding: 6,
+  width: 42, // mantém o fundo branco discreto
+  height: 42,
+  backgroundColor: '',
+  borderRadius: 21,
+  justifyContent: 'center',
+  alignItems: 'center',
   shadowColor: '#000',
   shadowOffset: { width: 0, height: 2 },
   shadowOpacity: 0.1,
@@ -281,9 +295,9 @@ userIcon: {
 },
 
 userImage: {
-  width: 36,
-  height: 36,
-  borderRadius: 18,
+  width: 50, // agora ocupa mais espaço dentro do círculo
+  height: 40,
+  borderRadius: 19,
 },
 
 headerGreeting: {
@@ -330,16 +344,13 @@ searchIcon: {
   marginLeft: 10,
 },
 filterButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 29,
-    backgroundColor: '#fff',
-    borderRadius: 999,
-    borderWidth: 2,
-    borderColor: '#7DACFF',
-    marginRight: 1,
-    paddingRight: -15,
-    marginHorizontal: 20,
-  },
+  paddingVertical: 10,
+  paddingHorizontal: 24,
+  backgroundColor: '#fff',
+  borderRadius: 999,
+  borderWidth: 2,
+  borderColor: '#7DACFF',
+},
   filterText: {
     color: '#003366',
     fontWeight: '600',

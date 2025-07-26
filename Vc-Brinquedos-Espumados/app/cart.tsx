@@ -6,14 +6,21 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Info from '../components/cellphoneInfo';
 import { useCart } from '../components/contexts/CartContext';
 import NavBar from '../components/nav-bar'; 
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function CartScreen() {
   const [user, setUser] = useState(null);
   const { cartItems, incrementQuantity, decrementQuantity } = useCart();
 
   const whatsappNumber = "5541987446352";
-  const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-  const total = subtotal;
+  const calcularPrecoComDesconto = (item: CartItem) => {
+    const isPromocao = item.section?.toLowerCase() === 'promocoes';
+    const preco = isPromocao ? item.price * 0.9 : item.price;
+    return preco * item.quantity;
+};
+
+const subtotal = cartItems.reduce((total, item) => total + calcularPrecoComDesconto(item), 0);
+const total = subtotal;
   const fullName = "";
 
   useEffect(() => {
@@ -34,9 +41,16 @@ export default function CartScreen() {
       return;
     }
 
-    const itemList = cartItems.map((item) =>
-      ` • ${item.name} x${item.quantity} = R$${(item.price * item.quantity).toFixed(2)}`
-    ).join('\n');
+    const itemList = cartItems.map((item) => {
+      const isPromocao = item.section?.toLowerCase() === 'promocoes';
+      const precoComDesconto = isPromocao ? item.price * 0.9 : item.price;
+      const totalItem = precoComDesconto * item.quantity;
+      const precoOriginal = item.price * item.quantity;
+
+      return isPromocao
+        ? ` • ${item.name} x${item.quantity} = R$${totalItem.toFixed(2)} (de: R$${precoOriginal.toFixed(2)})`
+        : ` • ${item.name} x${item.quantity} = R$${totalItem.toFixed(2)}`;
+    }).join('\n');
 
     const userInfo = `Endereço: ${user.road}, ${user.numberHouse} - ${user.neighborhood}\nCidade: ${user.city} - ${user.uf}\nCEP: ${user.cep}\nComplemento: ${user.complement}`;
 
@@ -76,8 +90,24 @@ export default function CartScreen() {
         <Image source={{ uri: item.image }} style={styles.ItemImage} />
         <View style={styles.ItemInfo}>
           <Text style={styles.ItemName}>{item.name}</Text>
-          <Text style={styles.ItemPrice}>R$ {item.price.toFixed(2)} x {item.quantity}</Text>
-          <Text style={styles.ItemPrice}>Total: R$ {(item.price * item.quantity).toFixed(2)}</Text>
+          <Text style={styles.ItemPrice}>
+            R$ {(item.section?.toLowerCase() === 'promocoes' ? (item.price * 0.9).toFixed(2) : item.price.toFixed(2))} x {item.quantity}
+          </Text>
+
+          <Text style={styles.ItemPrice}>
+            Total: R$ {(
+              (item.section?.toLowerCase() === 'promocoes'
+                ? item.price * 0.9
+                : item.price) * item.quantity
+              ).toFixed(2)}
+          </Text>
+
+          {/* Preço original riscado se for promoção */}
+          {item.section?.toLowerCase() === 'promocoes' && (
+            <Text style={{ textDecorationLine: 'line-through', color: 'gray', fontSize: 12 }}>
+              De: R$ {(item.price * item.quantity).toFixed(2)}
+            </Text>
+          )}
 
           <View style={styles.QuantityControls}>
             <TouchableOpacity onPress={() => decrementQuantity(item.id)} style={styles.QtyBtn}>
@@ -102,8 +132,18 @@ export default function CartScreen() {
         <View style={styles.Total}>
           <Text style={styles.TextTotal}>TOTAL</Text>
           <Text style={styles.BuyValue}>R$ {total.toFixed(2)}</Text>
+        </View>
+
+        <View style={styles.ButtonWrapper}>
           <TouchableOpacity onPress={handleZap}>
-            <Text style={{ color: 'blue' }}>Finalizar Compra</Text>
+            <LinearGradient
+              colors={['#D9D9D9', '#969595']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={styles.FinalizarCompraBtn}
+            >
+              <Text style={styles.FinalizarCompraText}>Finalizar Compra</Text>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
       </View>
@@ -201,42 +241,32 @@ const styles = StyleSheet.create({
     fontWeight: '600'
   },
   BuyPhase: {
-    paddingVertical: 20,
     paddingHorizontal: 20,
-    marginVertical: 20
+    paddingBottom: 100, // pra não ficar colado na navbar
+    marginTop: 0,
   },
   SubTotal: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10,
-    marginTop: -90,
-    textAlign: 'left',
-    marginLeft: -3,
-
   },
   SubTotalText: {
     fontSize: 16,
-    marginTop: -1,
-    marginBottom: 100,
-    textAlign: 'left',
-    marginLeft: 4,
     fontWeight: 'bold',
   },
   Total: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: -90,
-    marginBottom: 70,
-    textAlign: 'left',
-    marginLeft: 4,
+    alignItems: 'center',
+    marginBottom: 10,
   },
   TextTotal: {
     fontWeight: 'bold',
-    fontSize: 16
+    fontSize: 16,
   },
   BuyValue: {
     fontWeight: 'bold',
-    fontSize: 16
+    fontSize: 16,
   },
   EmptyCart: {
     alignItems: 'center',
@@ -252,6 +282,19 @@ const styles = StyleSheet.create({
   EmptyText: {
     fontSize: 16,
     color: '#555',
-  },  
+  },
+  ButtonWrapper: {
+    alignItems: 'flex-end',
+  },
+  FinalizarCompraBtn: {
+    borderRadius: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+  },
+  FinalizarCompraText: {
+    color: '#007BFF',
+    fontWeight: 'bold',
+    fontSize: 13,
+    textAlign: 'center',
+  },
 });
-

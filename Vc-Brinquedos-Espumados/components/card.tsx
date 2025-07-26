@@ -154,12 +154,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   favIcon: {
+    bottom: -3,
+    right: -2,
     width: 22,
     height: 22,
   },
   conteinerIconcart: {
     position: 'absolute',
-    bottom: 70,
+    bottom: 60,
     right: 10,
   },
   CartIcon: {
