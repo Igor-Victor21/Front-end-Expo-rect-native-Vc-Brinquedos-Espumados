@@ -107,7 +107,7 @@ export default function Login() {
 
     return (
         <>
-            <View style={{ backgroundColor: '#2A2A2A' }}>
+            <View style={{ backgroundColor: '#e9e9e9ff' }}>
                 <Header />
             </View>
             <View style={styles.btnLoginCadastrar}>
@@ -132,11 +132,11 @@ export default function Login() {
                     <View style={styles.containerLogin}>
                         <View style={styles.inputWrapper}>
                             <Image source={require('../assets/image/Person.png')} style={styles.icon} />
-                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} value={email} onChangeText={setEmail} placeholder="Nome de usuário ou E-mail" keyboardType="email-address" placeholderTextColor="#ccc" />
+                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} value={email} onChangeText={setEmail} placeholder="Nome de usuário ou E-mail" keyboardType="email-address" placeholderTextColor="#aaaaaaff" />
                         </View>
                         <View style={styles.inputWrapper}>
                             <Image source={require('../assets/image/cadeado.png')} />
-                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} value={password} onChangeText={setPassword} placeholder="Senha" keyboardType="default" secureTextEntry={!showPassword} placeholderTextColor="#ccc" />
+                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} value={password} onChangeText={setPassword} placeholder="Senha" keyboardType="default" secureTextEntry={!showPassword} placeholderTextColor="#aaaaaaff" />
                             <TouchableOpacity onPress={() => setShowPassword(prev => !prev)} style={styles.eyeButton}>
                                 <Image source={require("../assets/image/Eye.png")} style={{ width: 20, height: 20 }} />
                             </TouchableOpacity>
@@ -152,21 +152,21 @@ export default function Login() {
                 {/* Tela de cadastro */}
                 {selectedTab === 'register' && (
                     <ScrollView contentContainerStyle={styles.containerLogin}>
-                        <Text style={{ color: '#fff', marginLeft: 10, fontFamily: "bold", fontSize: 16 }}>Nome Completo</Text>
+                        <Text style={{ color: '#00000', marginLeft: 10, fontFamily: "bold", fontSize: 16 }}>Nome Completo</Text>
                         <View style={styles.inputWrapper}>
-                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} placeholder="Nome Completo" placeholderTextColor="#ccc" value={fullName} onChangeText={setFullName} />
+                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} placeholder="Nome Completo" placeholderTextColor="#aaaaaaff" value={fullName} onChangeText={setFullName} />
                         </View>
 
-                        <Text style={{ color: '#fff', marginLeft: 10, fontFamily: "bold", fontSize: 16 }}>E-mail</Text>
+                        <Text style={{ color: '#00000', marginLeft: 10, fontFamily: "bold", fontSize: 16 }}>E-mail</Text>
                         <View style={styles.inputWrapper}>
                             <Image source={require('../assets/image/Person.png')} style={styles.icon} />
-                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} placeholder="E-mail" placeholderTextColor="#ccc" value={registerEmail} onChangeText={setRegisterEmail} keyboardType="email-address" />
+                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} placeholder="E-mail" placeholderTextColor="#aaaaaaff" value={registerEmail} onChangeText={setRegisterEmail} keyboardType="email-address" />
                         </View>
 
                         <Text style={{ color: '#fff', marginLeft: 10, fontFamily: "bold", fontSize: 16 }}>Senha</Text>
                         <View style={styles.inputWrapper}>
                             <Image source={require('../assets/image/cadeado.png')} />
-                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} placeholder="Senha" placeholderTextColor="#ccc" value={registerPassword} onChangeText={setRegisterPassword} secureTextEntry />
+                            <TextInput style={[styles.inputWithIcon, { outlineStyle: 'none' }]} placeholder="Senha" placeholderTextColor="#aaaaaaff" value={registerPassword} onChangeText={setRegisterPassword} secureTextEntry />
                         </View>
 
                         <TouchableOpacity style={styles.button} onPress={handleCreateUser}>
@@ -190,13 +190,13 @@ const styles = StyleSheet.create({
     btnLoginCadastrar: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#2A2A2A',
-        borderColor: '#2A2A2A'
+        backgroundColor: '#eeeeeeff',
+        borderColor: '#fafafaff'
     },
     containerButton: {
         flexDirection: 'row',
         borderWidth: 2,
-        borderColor: '#ffffff',
+        borderColor: '#000000ff',
         borderRadius: 999,
         opacity: 0.8,
         width: 250,
@@ -221,12 +221,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
     },
     btnTextContainer: {
-        color: '#ffffff',
+        color: '#000000ff',
         fontWeight: 'bold',
     },
     wrapLogin: {
         alignItems: 'center',
-        backgroundColor: '#2A2A2A',
+        backgroundColor: '#ecececff',
         flex: 2,
         width: '100%',
         overflow: 'hidden',
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderWidth: 2,
-        borderColor: '#ffffff',
+        borderColor: '#000000ff',
         borderRadius: 999,
         marginBottom: 15,
         paddingHorizontal: 15,
@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     },
     inputWithIcon: {
         flex: 1,
-        color: '#ffffff',
+        color: '#000000ff',
         paddingVertical: 15,
         paddingLeft: 10,
         paddingRight: 10,
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
         marginBottom: 100,
     },
     btnText: {
-        color: "#ffffff",
+        color: "#000000ff",
         opacity: 0.8,
         alignSelf: 'center'
     },

@@ -12,15 +12,13 @@ export default function InfoModal({ visible, onClose }: { visible: boolean, onCl
         <View style={styles.modalContent}>  
             <Text style={styles.infoTitle}>Quem Somos?</Text>
             <Text style={styles.infoText}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-            Pariatur, quia? Commodi ipsam, aliquid sint vitae natus rerum provident 
-            in inventore repudiandae atque libero accusantium nihil itaque eaque placeat nostrum veritatis?
+             Somos uma loja especializada na produção e venda de brinquedos 
+                espumados, ideais para escolas, creches, brinquedotecas, espaços 
+                recreativos e ambientes que priorizam o bem-estar das crianças. 
             </Text>
             <Text style={styles.infoTitle}>Onde Estamos?</Text>
             <Text style={styles.infoText}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-            Pariatur, quia? Commodi ipsam, aliquid sint vitae natus rerum provident 
-            in inventore repudiandae atque libero accusantium nihil itaque eaque placeat nostrum veritatis?
+            A loja está localizada em Curitiba, Paraná, no bairro Boqueirão, mas entregamos para todo território nacional.
             </Text>
           {/* <Button title="Fechar" onPress={onClose} /> */}
         </View>
@@ -53,7 +51,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',  
   },
   infoText: {
-    fontSize: 14,
+    textAlign: 'center',
+    fontSize: 21,
     paddingTop: 20,
     marginBottom: 100,
   }
