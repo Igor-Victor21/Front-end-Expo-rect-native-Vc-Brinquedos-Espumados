@@ -1,13 +1,14 @@
-import { Stack } from 'expo-router';
-import { CartProvider } from '../components/contexts/CartContext';
+import { Stack, useRouter } from 'expo-router';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CartProvider } from '../components/contexts/CartContext';
 
-// Impede que a tela principal apareça antes de carregar as fontes
 SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
+  const router = useRouter();
   const [fontsLoaded] = useFonts({
     'Baloo-SemiBold': require('../assets/fonts/Baloo2-SemiBold.ttf'),
     'Baloo2-Bold': require('../assets/fonts/Baloo2-Bold.ttf'),
@@ -16,21 +17,33 @@ export default function Layout() {
     'Poppins': require('../assets/fonts/Poppins-SemiBold.ttf'),
   });
 
-  // Libera a SplashScreen assim que as fontes carregarem
+  const [initialCheckDone, setInitialCheckDone] = useState(false);
+
   useEffect(() => {
+    const checkFirstLaunch = async () => {
+      const hasLaunched = await AsyncStorage.getItem('hasLaunched');
+      if (!hasLaunched) {
+        await AsyncStorage.setItem('hasLaunched', 'true');
+        router.replace('/intro'); // Vai para a intro se for o primeiro acesso
+      }
+      setInitialCheckDone(true);
+    };
+
     if (fontsLoaded) {
       SplashScreen.hideAsync();
+      checkFirstLaunch();
     }
   }, [fontsLoaded]);
 
-  // Enquanto carrega as fontes, não renderiza as telas
-  if (!fontsLoaded) {
+  if (!fontsLoaded || !initialCheckDone) {
     return null;
   }
 
   return (
     <CartProvider>
       <Stack>
+        <Stack.Screen name="intro" options={{ headerShown: false }} />
+        <Stack.Screen name="_index" options={{ headerShown: false }} />
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name='cart' options={{ headerShown: false }} />
         <Stack.Screen name='favorite' options={{ headerShown: false }} />

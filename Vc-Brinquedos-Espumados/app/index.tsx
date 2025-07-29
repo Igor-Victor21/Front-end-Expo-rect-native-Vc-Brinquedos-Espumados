@@ -2,7 +2,16 @@ import { apiVcEspumados } from "@/api/apiVcEspumados";
 import { Card } from '../components/card';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, ImageBackground } from 'react-native';
+import {
+  FlatList,
+  Image,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import InfoCell from '../components/cellphoneInfo';
@@ -27,11 +36,24 @@ export default function HomeScreen() {
   const [messageToast, setMessageToast] = useState('');
   const [barContent, setBarContent] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
+  const [introChecked, setIntroChecked] = useState(false); // novo controle
 
-  // ✅ Aqui você obtém a função do contexto
   const { addToCart } = useCart();
 
   useEffect(() => {
+    const checkIntroSeen = async () => {
+      const seen = await AsyncStorage.getItem('hasSeenIntro');
+      if (!seen) {
+        await AsyncStorage.setItem('hasSeenIntro', 'true');
+        router.replace('/intro');
+        return;
+      }
+
+      setIntroChecked(true);
+      checkModalStatus();
+      fetchData();
+    };
+
     const checkModalStatus = async () => {
       try {
         const hasSeenModal = await AsyncStorage.getItem('hasSeenModal');
@@ -53,8 +75,7 @@ export default function HomeScreen() {
       }
     };
 
-    checkModalStatus();
-    fetchData();
+    checkIntroSeen();
   }, []);
 
   const handleProduct = (item: Produto) => {
@@ -69,9 +90,10 @@ export default function HomeScreen() {
     const nome = produto.name.toLowerCase();
     const busca = searchQuery.toLowerCase();
 
-    const filtroCategoria = barContent === 1
-      || (barContent === 2 && secao === 'kits')
-     || (barContent === 3 && secao === 'promocoes');
+    const filtroCategoria =
+      barContent === 1 ||
+      (barContent === 2 && secao === 'kits') ||
+      (barContent === 3 && secao === 'promocoes');
 
     const filtroBusca = nome.includes(busca);
 
@@ -85,10 +107,12 @@ export default function HomeScreen() {
   };
 
   const showCartToast = () => {
-  setMessageToast('Item adicionado ao carrinho!');
-  setShowToast(true);
-  setTimeout(() => setShowToast(false), 2000);
+    setMessageToast('Item adicionado ao carrinho!');
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
   };
+
+  if (!introChecked) return null;
 
   return (
     <>
@@ -145,7 +169,7 @@ export default function HomeScreen() {
         data={produtosFiltrados}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: 'center', gap: 16, marginBottom: 16 }}
-        contentContainerStyle={{ paddingBottom: 100 }} // pode ajustar como quiser
+        contentContainerStyle={{ paddingBottom: 100 }}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={{ width: 180, marginHorizontal: 8 }}>
@@ -177,9 +201,8 @@ export default function HomeScreen() {
   );
 }
 
-
 const styles = StyleSheet.create({
-  toastConteiner:{
+  toastConteiner: {
     position: 'absolute',
     top: 80,
     left: 20,
@@ -191,177 +214,110 @@ const styles = StyleSheet.create({
     elevation: 9999,
     alignItems: 'center',
   },
-  toastMessage:{
+  toastMessage: {
     color: '#fefefe'
   },
-  UserImagePosition: {
-    width: '10%',
-    right: '-90%',
+  Text: {
+    marginHorizontal: 15,
+    color: '#7DACFF',
+    fontSize: 28,
+    fontFamily: 'Baloo-SemiBold',
+    marginBottom: 15,
+    marginTop: 20,
   },
-  UserImage:{
-    width: 25,
-    height: 25
-  },
-  MessageIntro: {
-    fontWeight: 'bold',
-    fontSize: 36,
-    fontFamily: 'Montserrat',
-    paddingTop: 45,
-    paddingBottom: 5
-  },
-  Slogan: {
-    fontSize: 15,
-    fontFamily: 'Inter'
-  },
-  SearchBar: {
-    marginTop: 40,
-    padding: 10,
-    backgroundColor: 'white',
-    borderRadius: 999
-  },
- Text: {
-  marginHorizontal: 15,
-  color: '#7DACFF', // Alterado para aparecer melhor
-  fontSize: 28,
-  fontFamily: 'Baloo-SemiBold',
-  marginBottom: 15,
-  marginTop: 20,
-},
   Bar: {
-  flexDirection: 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
-  gap: 30,
-  marginBottom: 20,
-  paddingHorizontal: 16, // opcional
-},
-  Baritem: {
-    backgroundColor: '#7DACFF',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 30,
+    marginBottom: 20,
+    paddingHorizontal: 16,
+  },
+  filterButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    backgroundColor: '#fff',
     borderRadius: 999,
-    margin: 15,
-    width: '25%',
-    padding: 10,
-    marginBottom: 5
+    borderWidth: 2,
+    borderColor: '#7DACFF',
   },
-  textBtn:{
-    color: 'white',
-    alignSelf: 'center',
-    
-  },
-  conteinerCards:{
-    display: 'flex',
-    height: 350,
-    marginLeft: 2,
-  },
- wrapCards: {
-  paddingLeft: 10,
-  flexWrap: "wrap",
-  flexDirection: "column"
-},
-
-flatCards: {
-  paddingRight: 16,
-},
- headerContainer: {
-  paddingHorizontal: 16,
-  marginTop: 10,
-  marginBottom: 20, 
-},
-
-headerBackground: {
-  width: '100%',
-  borderRadius: 24,
-  paddingHorizontal: 20,
-  paddingTop: 30,
-  paddingBottom: 20, // menor altura
-  backgroundColor: 'transparent',
-},
-
-userIcon: {
-  position: 'absolute',
-  top: 12,
-  right: 12,
-  width: 42, // mantém o fundo branco discreto
-  height: 42,
-  backgroundColor: '',
-  borderRadius: 21,
-  justifyContent: 'center',
-  alignItems: 'center',
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 3,
-  elevation: 3,
-},
-
-userImage: {
-  width: 50, // agora ocupa mais espaço dentro do círculo
-  height: 40,
-  borderRadius: 19,
-},
-
-headerGreeting: {
-  fontSize: 43,
-  color: '#332623',
-  fontFamily: 'Baloo-SemiBold',
-  marginBottom: 4,
-  marginTop: 40,
-},
-
-headerSubtitle: {
-  fontSize: 16,
-  color: '#332623',
-  fontFamily: 'Baloo-SemiBold',
-  marginBottom: 59,
-  marginTop: -1,
-},
-
-searchBar: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  backgroundColor: '#DAE8FF',
-  borderRadius: 999,
-  paddingHorizontal: 16,
-  paddingVertical: 15,
-  borderWidth: 1.5,
-  borderColor: '#332623',
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.05,
-  shadowRadius: 2,
-  elevation: 2,
-},
-
-searchInput: {
-  flex: 1,
-  fontSize: 14,
-  fontFamily: 'Baloo-SemiBold',
-},
-
-searchIcon: {
-  width: 20,
-  height: 20,
-  marginLeft: 10,
-},
-filterButton: {
-  paddingVertical: 10,
-  paddingHorizontal: 24,
-  backgroundColor: '#fff',
-  borderRadius: 999,
-  borderWidth: 2,
-  borderColor: '#7DACFF',
-},
   filterText: {
     color: '#003366',
     fontWeight: '600',
     fontSize: 15,
     fontFamily: 'Baloo-SemiBold',
-
   },
   activeFilter: {
     backgroundColor: '#7DACFF',
   },
   activeFilterText: {
     color: '#fff',
-    },
+  },
+  headerContainer: {
+    paddingHorizontal: 16,
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  headerBackground: {
+    width: '100%',
+    borderRadius: 24,
+    paddingHorizontal: 20,
+    paddingTop: 30,
+    paddingBottom: 20,
+    backgroundColor: 'transparent',
+  },
+  userIcon: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  userImage: {
+    width: 50,
+    height: 40,
+    borderRadius: 19,
+  },
+  headerGreeting: {
+    fontSize: 43,
+    color: '#332623',
+    fontFamily: 'Baloo-SemiBold',
+    marginBottom: 4,
+    marginTop: 40,
+  },
+  headerSubtitle: {
+    fontSize: 16,
+    color: '#332623',
+    fontFamily: 'Baloo-SemiBold',
+    marginBottom: 59,
+    marginTop: -1,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#DAE8FF',
+    borderRadius: 999,
+    paddingHorizontal: 16,
+    paddingVertical: 15,
+    borderWidth: 1.5,
+    borderColor: '#332623',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    fontFamily: 'Baloo-SemiBold',
+  },
+  searchIcon: {
+    width: 20,
+    height: 20,
+    marginLeft: 10,
+  },
 });
